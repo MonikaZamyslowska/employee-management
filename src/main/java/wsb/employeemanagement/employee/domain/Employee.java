@@ -23,8 +23,12 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name = "system_user_id", nullable = false)
+    private User user;
+
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "grade")
+    @Column(name = "grade", nullable = false)
     private Grade grade;
 
     @Column(name = "capacity")
@@ -32,7 +36,7 @@ public class Employee {
     private Integer capacity;
 
     @ManyToOne
-    @JoinColumn(name = "supervisor_id")
+    @JoinColumn(name = "supervisor_id", nullable = false)
     private Employee supervisor;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -50,7 +54,7 @@ public class Employee {
             joinColumns = {@JoinColumn(name = "employee_id")}
 
     )
-    @Column(name = "roles")
+    @Column(name = "roles", nullable = false)
     private List<Role> roles;
 
     @OneToMany(
@@ -64,8 +68,4 @@ public class Employee {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project ownerProject;
-
-    @OneToOne
-    @JoinColumn(name = "system_user_id")
-    private User user;
 }

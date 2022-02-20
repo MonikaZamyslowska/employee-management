@@ -19,15 +19,15 @@ public class Skill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "skill_name")
+    @Column(name = "skill_name", nullable = false)
     private String skillName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "skill_category")
+    @Column(name = "skill_category", nullable = false)
     private SkillCategory skillCategory;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "skill_level")
+    @Column(name = "skill_level", nullable = false)
     private SkillLevel skillLevel;
 
     @ManyToMany(cascade = CascadeType.ALL)
