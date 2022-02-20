@@ -1,6 +1,8 @@
 package wsb.employeemanagement.task.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.domain.Grade;
@@ -12,11 +14,12 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "task")
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity(name = "task")
 public class Task {
     @Id
-    @Column(name = "task_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne

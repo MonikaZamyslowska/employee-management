@@ -1,6 +1,8 @@
 package wsb.employeemanagement.skill.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import wsb.employeemanagement.employee.domain.Employee;
 
@@ -9,12 +11,12 @@ import java.util.List;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "skill")
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity(name = "skill")
 public class Skill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "skill_id")
     private Long id;
 
     @Column(name = "skill_name")

@@ -1,10 +1,13 @@
 package wsb.employeemanagement.employee.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import wsb.employeemanagement.project.domain.Project;
 import wsb.employeemanagement.skill.domain.Skill;
 import wsb.employeemanagement.task.domain.Task;
+import wsb.employeemanagement.user.domain.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -12,19 +15,13 @@ import java.util.List;
 
 @Getter
 @Setter
-@Entity
-@Table
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity(name = "employee")
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "employee_id")
     private Long id;
-
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "grade")
@@ -67,4 +64,8 @@ public class Employee {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project ownerProject;
+
+    @OneToOne
+    @JoinColumn(name = "system_user_id")
+    private User user;
 }
