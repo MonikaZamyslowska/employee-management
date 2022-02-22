@@ -1,9 +1,6 @@
 package wsb.employeemanagement.employee.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import wsb.employeemanagement.project.domain.Project;
 import wsb.employeemanagement.skill.domain.Skill;
 import wsb.employeemanagement.task.domain.Task;
@@ -13,8 +10,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "employee")

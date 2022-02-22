@@ -1,9 +1,6 @@
 package wsb.employeemanagement.employee.domain.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.domain.Grade;
 import wsb.employeemanagement.employee.domain.Role;
@@ -14,11 +11,12 @@ import wsb.employeemanagement.user.domain.User;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmployeeDto {
+    private Long id;
     private User user;
     private Grade grade;
     private Integer capacity;

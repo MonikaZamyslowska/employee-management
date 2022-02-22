@@ -1,23 +1,23 @@
 package wsb.employeemanagement.project.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.task.domain.Task;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Getter
-@Setter
-@Entity
-@Table(name = "project")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity(name = "project")
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Column(name = "description")

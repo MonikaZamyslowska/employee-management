@@ -14,6 +14,7 @@ import wsb.employeemanagement.project.domain.Project;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaskDto {
+    private Long id;
     private Project project;
     private Role role;
     private Grade grade;
