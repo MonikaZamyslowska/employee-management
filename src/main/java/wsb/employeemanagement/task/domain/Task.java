@@ -1,9 +1,6 @@
 package wsb.employeemanagement.task.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.domain.Grade;
 import wsb.employeemanagement.employee.domain.Role;
@@ -12,8 +9,8 @@ import wsb.employeemanagement.project.domain.Project;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
-@Getter
-@Setter
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "task")
@@ -21,6 +18,10 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "task_status")
+    private TaskStatus taskStatus;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)

@@ -20,6 +20,7 @@ public class EmployeeMapper {
                 employee.getSkillList(),
                 employee.getRoles(),
                 employee.getTasks(),
+                employee.getTaskRequests(),
                 employee.getOwnerProject()
         );
     }
@@ -34,6 +35,7 @@ public class EmployeeMapper {
                 employeeDto.getSkillList(),
                 employeeDto.getRoles(),
                 employeeDto.getTasks(),
+                employeeDto.getTaskRequests(),
                 employeeDto.getOwnerProject()
         );
     }

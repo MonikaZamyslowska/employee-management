@@ -1,19 +1,13 @@
 package wsb.employeemanagement.user.mapper;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 import wsb.employeemanagement.user.domain.User;
 import wsb.employeemanagement.user.domain.dto.UserDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Builder
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Component
 public class UserMapper {
 
     public UserDto mapUserToDto(User user) {

@@ -1,19 +1,13 @@
 package wsb.employeemanagement.skill.mapper;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 import wsb.employeemanagement.skill.domain.Skill;
 import wsb.employeemanagement.skill.domain.dto.SkillDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Component
 public class SkillMapper {
 
     public SkillDto mapSkillToDto(Skill skill) {

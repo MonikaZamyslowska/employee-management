@@ -7,6 +7,7 @@ import wsb.employeemanagement.employee.domain.Role;
 import wsb.employeemanagement.project.domain.Project;
 import wsb.employeemanagement.skill.domain.Skill;
 import wsb.employeemanagement.task.domain.Task;
+import wsb.employeemanagement.task.domain.TaskRequest;
 import wsb.employeemanagement.user.domain.User;
 
 import java.util.List;
@@ -24,5 +25,6 @@ public class EmployeeDto {
     private List<Skill> skillList;
     private List<Role> roles;
     private List<Task> tasks;
+    private List<TaskRequest> taskRequests;
     private Project ownerProject;
 }

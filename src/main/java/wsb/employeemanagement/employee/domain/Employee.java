@@ -4,6 +4,7 @@ import lombok.*;
 import wsb.employeemanagement.project.domain.Project;
 import wsb.employeemanagement.skill.domain.Skill;
 import wsb.employeemanagement.task.domain.Task;
+import wsb.employeemanagement.task.domain.TaskRequest;
 import wsb.employeemanagement.user.domain.User;
 
 import javax.persistence.*;
@@ -61,6 +62,15 @@ public class Employee {
             fetch = FetchType.LAZY
     )
     private List<Task> tasks;
+
+
+    @OneToMany(
+            targetEntity = TaskRequest.class,
+            mappedBy = "employee",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private List<TaskRequest> taskRequests;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
