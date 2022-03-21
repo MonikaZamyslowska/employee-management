@@ -46,7 +46,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()
-                .usernameParameter("email")
+                .usernameParameter("username")
+//                TODO: success URL
                 .defaultSuccessUrl("/account")
                 .permitAll()
                 .and()

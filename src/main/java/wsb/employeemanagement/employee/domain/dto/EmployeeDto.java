@@ -1,6 +1,9 @@
 package wsb.employeemanagement.employee.domain.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.domain.Grade;
 import wsb.employeemanagement.employee.domain.Role;

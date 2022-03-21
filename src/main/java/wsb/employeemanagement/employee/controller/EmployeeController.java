@@ -1,11 +1,16 @@
 package wsb.employeemanagement.employee.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import wsb.employeemanagement.employee.domain.dto.EmployeeDto;
 import wsb.employeemanagement.employee.mapper.EmployeeMapper;
 import wsb.employeemanagement.employee.service.EmployeeService;
+import wsb.employeemanagement.exception.EmployeeAlreadyExistsException;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -14,34 +19,52 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @CrossOrigin("*")
 @RequestMapping("/employees")
 public class EmployeeController {
-    @Autowired
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
+    private final EmployeeMapper employeeMapper;
 
     @Autowired
-    private EmployeeMapper employeeMapper;
+    public EmployeeController(EmployeeService employeeService, EmployeeMapper employeeMapper) {
+        this.employeeService = employeeService;
+        this.employeeMapper = employeeMapper;
+    }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
-    public EmployeeDto createEmployee(@RequestBody final EmployeeDto employeeDto) {
-        return null;
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('SUPER_USER')")
+    public ResponseEntity createEmployee(@RequestBody @Valid EmployeeDto employeeDto) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(employeeMapper.mapEmployeeToDto(employeeService.saveEmployee(employeeMapper.mapDtoToEmployee(employeeDto))));
+        } catch (EmployeeAlreadyExistsException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
     }
 
     @GetMapping
+    //(params = {"!employeeId"})
     public List<EmployeeDto> getEmployees() {
-        return null;
+        return employeeMapper.mapEmployeeListToDto(employeeService.getAllEmployees());
     }
 
-    @GetMapping(value = "/{employeeId}")
+    @GetMapping(value = "{employeeId}")
     public EmployeeDto getEmployeeById(@PathVariable long employeeId) {
-        return null;
+        return employeeMapper.mapEmployeeToDto(employeeService.getEmployeeById(employeeId));
+    }
+
+    @GetMapping(value = "supervisor/{supervisorId}")
+    public List<EmployeeDto> getEmployeesBySupervisorId(@PathVariable long supervisorId) {
+        return employeeMapper.mapEmployeeListToDto(employeeService.getEmployeeBySupervisor(supervisorId));
     }
 
     @PutMapping
+    @ResponseStatus(HttpStatus.OK)
     public EmployeeDto updateEmployee(@RequestBody final EmployeeDto employeeDto) {
-        return null;
+        return employeeMapper.mapEmployeeToDto(employeeService.saveEmployee(employeeMapper.mapDtoToEmployee(employeeDto)));
     }
 
-    @DeleteMapping(value = "/{employeeId}")
+    @DeleteMapping(value = "{employeeId}")
+    @PreAuthorize("hasAnyRole('SUPER_USER')")
     public void deleteEmployee(@PathVariable long employeeId) {
-
+        employeeService.deleteEmployee(employeeId);
     }
 }

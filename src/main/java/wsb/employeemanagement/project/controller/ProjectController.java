@@ -1,6 +1,5 @@
 package wsb.employeemanagement.project.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import wsb.employeemanagement.project.domain.dto.ProjectDto;
 import wsb.employeemanagement.project.mapper.ProjectMapper;
@@ -14,34 +13,31 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @CrossOrigin("*")
 @RequestMapping("/projects")
 public class ProjectController {
-    @Autowired
     private ProjectService projectService;
-
-    @Autowired
     private ProjectMapper projectMapper;
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     public ProjectDto createProjectDto(@RequestBody final ProjectDto projectDto) {
-        return null;
+        return projectMapper.mapProjectToDto(projectService.saveProject(projectMapper.mapDtoToProject(projectDto)));
     }
 
     @GetMapping
     public List<ProjectDto> getProjects() {
-        return null;
+        return projectMapper.mapProjectListToDto(projectService.getAllProjects());
     }
 
     @GetMapping(value = "/{projectId}")
     public ProjectDto getProjectById(@PathVariable long projectId) {
-        return null;
+        return projectMapper.mapProjectToDto(projectService.getProjectById(projectId));
     }
 
     @PutMapping
     public ProjectDto updateProject(@RequestBody final ProjectDto projectDto) {
-        return null;
+        return projectMapper.mapProjectToDto(projectService.saveProject(projectMapper.mapDtoToProject(projectDto)));
     }
 
     @DeleteMapping(value = "/{projectId}")
     public void deleteProject(@PathVariable long projectId) {
-
+        projectService.deleteProject(projectId);
     }
 }

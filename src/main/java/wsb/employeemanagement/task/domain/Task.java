@@ -39,7 +39,6 @@ public class Task {
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
 
-    @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;
 }
