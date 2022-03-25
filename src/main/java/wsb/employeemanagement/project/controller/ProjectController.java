@@ -1,5 +1,6 @@
 package wsb.employeemanagement.project.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import wsb.employeemanagement.project.domain.dto.ProjectDto;
 import wsb.employeemanagement.project.mapper.ProjectMapper;
@@ -16,8 +17,14 @@ public class ProjectController {
     private ProjectService projectService;
     private ProjectMapper projectMapper;
 
+    @Autowired
+    public ProjectController(ProjectService projectService, ProjectMapper projectMapper) {
+        this.projectService = projectService;
+        this.projectMapper = projectMapper;
+    }
+
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
-    public ProjectDto createProjectDto(@RequestBody final ProjectDto projectDto) {
+    public ProjectDto createProject(@RequestBody final ProjectDto projectDto) {
         return projectMapper.mapProjectToDto(projectService.saveProject(projectMapper.mapDtoToProject(projectDto)));
     }
 
@@ -26,17 +33,17 @@ public class ProjectController {
         return projectMapper.mapProjectListToDto(projectService.getAllProjects());
     }
 
-    @GetMapping(value = "/{projectId}")
+    @GetMapping(value = "{projectId}")
     public ProjectDto getProjectById(@PathVariable long projectId) {
         return projectMapper.mapProjectToDto(projectService.getProjectById(projectId));
     }
 
-    @PutMapping
+    @PutMapping(consumes = APPLICATION_JSON_VALUE)
     public ProjectDto updateProject(@RequestBody final ProjectDto projectDto) {
         return projectMapper.mapProjectToDto(projectService.saveProject(projectMapper.mapDtoToProject(projectDto)));
     }
 
-    @DeleteMapping(value = "/{projectId}")
+    @DeleteMapping(value = "{projectId}")
     public void deleteProject(@PathVariable long projectId) {
         projectService.deleteProject(projectId);
     }

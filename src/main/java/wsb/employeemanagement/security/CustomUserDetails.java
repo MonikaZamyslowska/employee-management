@@ -10,7 +10,7 @@ import java.util.Collection;
 
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
-    private final User user;
+    private User user;
 
     public String getFullName() {
         return user.getFirstName() + " " + user.getLastName();

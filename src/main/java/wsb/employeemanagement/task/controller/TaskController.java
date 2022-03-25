@@ -15,8 +15,8 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @CrossOrigin("*")
 @RequestMapping("/tasks")
 public class TaskController {
-    private final TaskService taskService;
-    private final TaskMapper taskMapper;
+    private TaskService taskService;
+    private TaskMapper taskMapper;
 
     @Autowired
     public TaskController(TaskService taskService, TaskMapper taskMapper) {
@@ -27,28 +27,28 @@ public class TaskController {
     @PreAuthorize("hasAnyRole('SUPER_USER')")
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     public TaskDto createTask(@RequestBody final TaskDto taskDto) {
-        return null;
+        return taskMapper.mapTaskToDto(taskService.saveTask(taskMapper.mapDtoToTask(taskDto)));
     }
 
     @PreAuthorize("hasAnyRole('SUPER_USER')")
-    @PutMapping
+    @PutMapping(consumes = APPLICATION_JSON_VALUE)
     public TaskDto updateTask(@RequestBody final TaskDto taskDto) {
-        return null;
+        return taskMapper.mapTaskToDto(taskService.saveTask(taskMapper.mapDtoToTask(taskDto)));
     }
 
     @GetMapping
     public List<TaskDto> getTasks() {
-        return null;
+        return taskMapper.mapTaskListToDto(taskService.getAllTasks());
     }
 
-    @GetMapping(value = "/{taskId}")
+    @GetMapping(value = "{taskId}")
     public TaskDto getTaskById(@PathVariable long taskId) {
-        return null;
+        return taskMapper.mapTaskToDto(taskService.getTaskById(taskId));
     }
 
     @PreAuthorize("hasAnyRole('SUPER_USER')")
-    @DeleteMapping(value = "/{taskId}")
+    @DeleteMapping(value = "{taskId}")
     public void removeTask(@PathVariable long taskId) {
-
+        taskService.deleteTask(taskId);
     }
 }

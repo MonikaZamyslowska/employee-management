@@ -15,30 +15,38 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @CrossOrigin(origins = "*")
 @RequestMapping("/users")
 public class UserController {
-    @Autowired
     private UserService userService;
+    private UserMapper userMapper;
 
     @Autowired
-    private UserMapper userMapper;
+    public UserController(UserService userService, UserMapper userMapper) {
+        this.userService = userService;
+        this.userMapper = userMapper;
+    }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     public UserDto createUser(@RequestBody final UserDto userDto) {
-        return null;
+        return userMapper.mapUserToDto(userService.saveUser(userMapper.mapDtoToUser(userDto)));
     }
 
-    @PutMapping
+    @PutMapping(consumes = APPLICATION_JSON_VALUE)
     public UserDto updateUser(@RequestBody final UserDto userDto) {
-        return null;
+        return userMapper.mapUserToDto(userService.saveUser(userMapper.mapDtoToUser(userDto)));
     }
 
     @GetMapping
     public List<UserDto> getUsers() {
-        return null;
+        return userMapper.mapUserListToDto(userService.getAll());
     }
 
-    @DeleteMapping(value = "/{userId}")
-    public void deleteUser(@PathVariable("userId") long userId) {
+    @GetMapping(value = "{userId}")
+    public UserDto getUserById(@PathVariable long userId) {
+        return userMapper.mapUserToDto(userService.getUserById(userId));
+    }
 
+    @DeleteMapping(value = "{userId}")
+    public void deleteUser(@PathVariable("userId") long userId) {
+        userService.deleteUser(userId);
     }
 
 }

@@ -1,8 +1,8 @@
 package wsb.employeemanagement.employee.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wsb.employeemanagement.employee.domain.Employee;
-import wsb.employeemanagement.employee.mapper.EmployeeMapper;
 import wsb.employeemanagement.employee.repository.EmployeeRepository;
 import wsb.employeemanagement.exception.EmployeeNotFoundException;
 
@@ -11,7 +11,11 @@ import java.util.List;
 @Service
 public class EmployeeService {
     private EmployeeRepository employeeRepository;
-    private EmployeeMapper employeeMapper;
+
+    @Autowired
+    public EmployeeService(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
 
     public Employee saveEmployee(Employee employee) {
         return employeeRepository.save(employee);

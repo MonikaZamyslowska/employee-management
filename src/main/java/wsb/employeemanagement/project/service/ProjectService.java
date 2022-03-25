@@ -1,5 +1,6 @@
 package wsb.employeemanagement.project.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wsb.employeemanagement.exception.ProjectNotFoundException;
 import wsb.employeemanagement.project.domain.Project;
@@ -10,7 +11,11 @@ import java.util.List;
 @Service
 public class ProjectService {
     private ProjectRepository projectRepository;
-    private ProjectService projectService;
+
+    @Autowired
+    public ProjectService(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
 
     public Project saveProject(Project project) {
         return projectRepository.save(project);

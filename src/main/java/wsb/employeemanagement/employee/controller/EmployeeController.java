@@ -19,8 +19,8 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @CrossOrigin("*")
 @RequestMapping("/employees")
 public class EmployeeController {
-    private final EmployeeService employeeService;
-    private final EmployeeMapper employeeMapper;
+    private EmployeeService employeeService;
+    private EmployeeMapper employeeMapper;
 
     @Autowired
     public EmployeeController(EmployeeService employeeService, EmployeeMapper employeeMapper) {
