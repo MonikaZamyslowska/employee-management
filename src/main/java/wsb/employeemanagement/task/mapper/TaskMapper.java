@@ -18,7 +18,8 @@ public class TaskMapper {
                 task.getRole(),
                 task.getGrade(),
                 task.getCapacity(),
-                task.getEmployee()
+                task.getEmployee(),
+                task.getTaskRequests()
         );
     }
 
@@ -30,13 +31,14 @@ public class TaskMapper {
                 taskDto.getRole(),
                 taskDto.getGrade(),
                 taskDto.getCapacity(),
-                taskDto.getEmployee()
+                taskDto.getEmployee(),
+                taskDto.getTaskRequests()
         );
     }
 
     public List<TaskDto> mapTaskListToDto(List<Task> tasks) {
         return tasks.stream()
-                .map(task -> mapTaskToDto(task))
+                .map(this::mapTaskToDto)
                 .collect(Collectors.toList());
     }
 }

@@ -8,6 +8,7 @@ import wsb.employeemanagement.project.domain.Project;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 @Builder
@@ -42,4 +43,7 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;
+
+    @OneToMany(mappedBy = "task")
+    private List<TaskRequest> taskRequests;
 }

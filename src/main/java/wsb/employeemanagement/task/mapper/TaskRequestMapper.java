@@ -30,7 +30,7 @@ public class TaskRequestMapper {
 
     public List<TaskRequestDto> mapTaskRequestListToDto(List<TaskRequest> taskRequests) {
         return taskRequests.stream()
-                .map(taskRequest -> mapTaskRequestToDto(taskRequest))
+                .map(this::mapTaskRequestToDto)
                 .collect(Collectors.toList());
     }
 }

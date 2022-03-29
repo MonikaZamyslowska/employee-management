@@ -1,9 +1,5 @@
 package wsb.employeemanagement.project.mapper;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import wsb.employeemanagement.project.domain.Project;
 import wsb.employeemanagement.project.domain.dto.ProjectDto;
@@ -36,7 +32,7 @@ public class ProjectMapper {
 
     public List<ProjectDto> mapProjectListToDto(List<Project> projects) {
         return projects.stream()
-                .map(project -> mapProjectToDto(project))
+                .map(this::mapProjectToDto)
                 .collect(Collectors.toList());
     }
 }

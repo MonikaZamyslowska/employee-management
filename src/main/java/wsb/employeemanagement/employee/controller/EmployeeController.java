@@ -3,7 +3,6 @@ package wsb.employeemanagement.employee.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import wsb.employeemanagement.employee.domain.dto.EmployeeDto;
 import wsb.employeemanagement.employee.mapper.EmployeeMapper;
@@ -30,7 +29,6 @@ public class EmployeeController {
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('SUPER_USER')")
     public ResponseEntity createEmployee(@RequestBody @Valid EmployeeDto employeeDto) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -63,7 +61,6 @@ public class EmployeeController {
     }
 
     @DeleteMapping(value = "{employeeId}")
-    @PreAuthorize("hasAnyRole('SUPER_USER')")
     public void deleteEmployee(@PathVariable long employeeId) {
         employeeService.deleteEmployee(employeeId);
     }

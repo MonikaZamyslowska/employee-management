@@ -42,7 +42,7 @@ public class EmployeeMapper {
 
     public List<EmployeeDto> mapEmployeeListToDto(List<Employee> employees) {
         return employees.stream()
-                .map(employee -> mapEmployeeToDto(employee))
+                .map(this::mapEmployeeToDto)
                 .collect(Collectors.toList());
     }
 }

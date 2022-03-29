@@ -32,7 +32,7 @@ public class SkillMapper {
 
     public List<SkillDto> mapSkillListToDto(List<Skill> skills) {
         return skills.stream()
-                .map(skill -> mapSkillToDto(skill))
+                .map(this::mapSkillToDto)
                 .collect(Collectors.toList());
     }
 }
