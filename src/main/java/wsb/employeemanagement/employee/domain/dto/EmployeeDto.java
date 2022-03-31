@@ -11,7 +11,6 @@ import wsb.employeemanagement.project.domain.Project;
 import wsb.employeemanagement.skill.domain.Skill;
 import wsb.employeemanagement.task.domain.Task;
 import wsb.employeemanagement.task.domain.TaskRequest;
-import wsb.employeemanagement.user.domain.User;
 
 import java.util.List;
 
@@ -21,7 +20,10 @@ import java.util.List;
 @NoArgsConstructor
 public class EmployeeDto {
     private Long id;
-    private User user;
+    private String username;
+    private String firstName;
+    private String lastName;
+    private String email;
     private Grade grade;
     private Integer capacity;
     private Employee supervisor;

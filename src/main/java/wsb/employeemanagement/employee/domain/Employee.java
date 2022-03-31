@@ -1,11 +1,13 @@
 package wsb.employeemanagement.employee.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import wsb.employeemanagement.project.domain.Project;
 import wsb.employeemanagement.skill.domain.Skill;
 import wsb.employeemanagement.task.domain.Task;
 import wsb.employeemanagement.task.domain.TaskRequest;
-import wsb.employeemanagement.user.domain.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -21,9 +23,17 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "system_user_id", nullable = false)
-    private User user;
+    @Column(name = "username", nullable = false)
+    private String username;
+
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "grade", nullable = false)
@@ -42,7 +52,7 @@ public class Employee {
             name = "employee_skill",
             joinColumns = {@JoinColumn(name = "employee_id")},
             inverseJoinColumns = {@JoinColumn(name = "skill_id")}
-            )
+    )
     private List<Skill> skillList;
 
     @ElementCollection(targetClass = Role.class)
