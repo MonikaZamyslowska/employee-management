@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import wsb.employeemanagement.employee.domain.Role;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Getter
 @Setter

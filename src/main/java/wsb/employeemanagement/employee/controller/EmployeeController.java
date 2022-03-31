@@ -9,6 +9,7 @@ import wsb.employeemanagement.employee.mapper.EmployeeMapper;
 import wsb.employeemanagement.employee.service.EmployeeService;
 import wsb.employeemanagement.exception.EmployeeAlreadyExistsException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/employees")
+@RolesAllowed({"User", "Moderator", "Admin"})
 public class EmployeeController {
     private EmployeeService employeeService;
     private EmployeeMapper employeeMapper;
@@ -39,7 +41,6 @@ public class EmployeeController {
     }
 
     @GetMapping
-    //(params = {"!employeeId"})
     public List<EmployeeDto> getEmployees() {
         return employeeMapper.mapEmployeeListToDto(employeeService.getAllEmployees());
     }
