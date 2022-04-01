@@ -24,6 +24,7 @@ public class EmployeeDto {
     private String firstName;
     private String lastName;
     private String email;
+    private String password;
     private Grade grade;
     private Integer capacity;
     private Employee supervisor;

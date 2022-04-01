@@ -35,6 +35,9 @@ public class Employee {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Column(name = "password", nullable = false, unique = true)
+    private String password;
+
     @Enumerated(value = EnumType.STRING)
     @Column(name = "grade", nullable = false)
     private Grade grade;

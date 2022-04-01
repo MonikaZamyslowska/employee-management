@@ -1,22 +1,17 @@
 package wsb.employeemanagement.employee.controller;
 
-import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.domain.dto.EmployeeDto;
 import wsb.employeemanagement.employee.mapper.EmployeeMapper;
 import wsb.employeemanagement.employee.service.EmployeeService;
 import wsb.employeemanagement.exception.EmployeeAlreadyExistsException;
+import wsb.employeemanagement.validation.Username;
 
 import javax.annotation.security.RolesAllowed;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.List;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -36,47 +31,51 @@ public class EmployeeController {
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @RolesAllowed({"Admin"})
+    @RolesAllowed({"ROLE_ADMIN"})
     public ResponseEntity createEmployee(@RequestBody @Valid EmployeeDto employeeDto) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(employeeMapper.mapEmployeeToDto(employeeService.saveEmployee(employeeMapper.mapDtoToEmployee(employeeDto))));
+                    .body(employeeService.createEmployee(employeeMapper.mapDtoToEmployee(employeeDto)));
         } catch (EmployeeAlreadyExistsException e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
 
     @GetMapping
-    @RolesAllowed({"Admin"})
+    @RolesAllowed({"ROLE_ADMIN"})
     public List<EmployeeDto> getEmployees() {
         return employeeMapper.mapEmployeeListToDto(employeeService.getAllEmployees());
     }
 
     @GetMapping("/{employeeId}")
-    @RolesAllowed({"User", "Moderator", "Admin"})
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public EmployeeDto getEmployeeById(@PathVariable long employeeId) {
         return employeeMapper.mapEmployeeToDto(employeeService.getEmployeeById(employeeId));
     }
 
+    @GetMapping("username/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
+    public EmployeeDto getEmployeeByUsername(@PathVariable @Username String username) {
+        return employeeMapper.mapEmployeeToDto(employeeService.getEmployeeByUsername(username));
+    }
+
     @GetMapping("/supervisor/{supervisorId}")
-    @RolesAllowed({"Moderator"})
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public List<EmployeeDto> getEmployeesBySupervisorId(@PathVariable long supervisorId) {
         return employeeMapper.mapEmployeeListToDto(employeeService.getEmployeeBySupervisor(supervisorId));
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    @RolesAllowed({"User", "Moderator", "Admin"})
-    public EmployeeDto updateEmployee(@RequestBody final EmployeeDto employeeDto, KeycloakAuthenticationToken token) {
-        if (token != null && (token.getAccount().getRoles().contains("Admin") ||
-                token.getAccount().getPrincipal().getName().equals(employeeDto.getUsername()))) {
-            employeeMapper.mapEmployeeToDto(employeeService.saveEmployee(employeeMapper.mapDtoToEmployee(employeeDto)));
-        }
-        return null;
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
+    public EmployeeDto updateEmployee(@RequestBody final EmployeeDto employeeDto) {
+        return employeeMapper.mapEmployeeToDto(employeeService.saveEmployee(employeeMapper.mapDtoToEmployee(employeeDto)));
     }
 
     @DeleteMapping("/{employeeId}")
-    @RolesAllowed({"User", "Moderator", "Admin"})
+    @ResponseStatus(HttpStatus.OK)
+    @RolesAllowed({"ROLE_ADMIN"})
     public void deleteEmployee(@PathVariable long employeeId) {
         employeeService.deleteEmployee(employeeId);
     }

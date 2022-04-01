@@ -3,7 +3,9 @@ package wsb.employeemanagement.employee.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wsb.employeemanagement.employee.domain.Employee;
+import wsb.employeemanagement.employee.keycloak.KeycloakService;
 import wsb.employeemanagement.employee.repository.EmployeeRepository;
+import wsb.employeemanagement.exception.EmployeeAlreadyExistsException;
 import wsb.employeemanagement.exception.EmployeeNotFoundException;
 
 import java.util.List;
@@ -11,10 +13,18 @@ import java.util.List;
 @Service
 public class EmployeeService {
     private EmployeeRepository employeeRepository;
+    private KeycloakService keycloakService;
 
     @Autowired
-    public EmployeeService(EmployeeRepository employeeRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, KeycloakService keycloakService) {
         this.employeeRepository = employeeRepository;
+        this.keycloakService = keycloakService;
+    }
+
+    public Employee createEmployee(Employee employee) {
+        verifyEmployeeDoesNotExist(employee.getUsername());
+        keycloakService.createUser(employee);
+        return employeeRepository.save(employee);
     }
 
     public Employee saveEmployee(Employee employee) {
@@ -40,5 +50,12 @@ public class EmployeeService {
 
     public void deleteEmployee(long employeeId) {
         employeeRepository.removeById(employeeId);
+    }
+
+
+    private void verifyEmployeeDoesNotExist(String username) {
+        if (employeeRepository.findEmployeeByUsername(username) != null) {
+            throw new EmployeeAlreadyExistsException("Employee with username " + username + " already exists");
+        }
     }
 }

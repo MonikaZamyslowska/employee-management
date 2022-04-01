@@ -37,6 +37,7 @@ dependencies {
 	implementation group: 'org.hibernate', name: 'hibernate-validator', version: '7.0.2.Final'
 	implementation 'junit:junit:4.12'
 	implementation group: 'org.keycloak', name: 'keycloak-spring-boot-starter'
+	implementation group: 'org.keycloak', name: 'keycloak-admin-client', version: '17.0.1'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

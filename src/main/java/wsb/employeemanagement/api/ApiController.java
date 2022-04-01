@@ -1,8 +1,6 @@
 package wsb.employeemanagement.api;
 
 
-
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +24,7 @@ public class ApiController {
     }
 
     @GetMapping("/login")
-    @RolesAllowed({"User", "Moderator", "Admin"})
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public String login(Principal principal, HttpServletRequest request, Model model) throws ServletException {
         try {
             Employee employee = employeeService.getEmployeeByUsername(principal.getName());
@@ -39,13 +37,13 @@ public class ApiController {
     }
 
     @GetMapping("/logout")
-    @RolesAllowed({"User", "Moderator", "Admin"})
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public String logout(HttpServletRequest request) throws ServletException {
         request.logout();
         return "index";
     }
 
-//    TODO: if token exist then redirect to the other page
+    //    TODO: if token exist then redirect to the other page
     @GetMapping(path = "/")
     public String index() {
         return "index";
