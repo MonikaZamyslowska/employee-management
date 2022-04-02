@@ -54,8 +54,7 @@ public class EmployeeService {
 
 
     private void verifyEmployeeDoesNotExist(String username) {
-        if (employeeRepository.findEmployeeByUsername(username) != null) {
-            throw new EmployeeAlreadyExistsException("Employee with username " + username + " already exists");
-        }
+        employeeRepository.findEmployeeByUsername(username)
+                .orElseThrow(() -> new EmployeeAlreadyExistsException("Employee with username " + username + " already exists"));
     }
 }

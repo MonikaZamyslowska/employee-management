@@ -43,7 +43,6 @@ public class ApiController {
         return "index";
     }
 
-    //    TODO: if token exist then redirect to the other page
     @GetMapping(path = "/")
     public String index() {
         return "index";
