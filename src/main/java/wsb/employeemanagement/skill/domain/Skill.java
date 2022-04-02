@@ -37,4 +37,9 @@ public class Skill {
             inverseJoinColumns = {@JoinColumn(name = "employee_id")}
     )
     private List<Employee> employees;
+// for tests only
+    public Skill(String skillName, SkillLevel skillLevel) {
+        this.skillName = skillName;
+        this.skillLevel = skillLevel;
+    }
 }

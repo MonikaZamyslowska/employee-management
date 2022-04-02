@@ -33,4 +33,10 @@ public class EmployeeDto {
     private List<Task> tasks;
     private List<TaskRequest> taskRequests;
     private Project ownerProject;
+
+//    for tests only
+    public EmployeeDto(Long id, String firstName) {
+        this.id = id;
+        this.firstName = firstName;
+    }
 }
