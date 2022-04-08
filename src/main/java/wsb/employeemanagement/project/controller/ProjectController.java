@@ -6,6 +6,7 @@ import wsb.employeemanagement.project.domain.dto.ProjectDto;
 import wsb.employeemanagement.project.mapper.ProjectMapper;
 import wsb.employeemanagement.project.service.ProjectService;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -24,26 +25,31 @@ public class ProjectController {
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
+    @RolesAllowed({"ROLE_ADMIN"})
     public ProjectDto createProject(@RequestBody final ProjectDto projectDto) {
         return projectMapper.mapProjectToDto(projectService.saveProject(projectMapper.mapDtoToProject(projectDto)));
     }
 
     @GetMapping
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public List<ProjectDto> getProjects() {
         return projectMapper.mapProjectListToDto(projectService.getAllProjects());
     }
 
-    @GetMapping(value = "{projectId}")
+    @GetMapping("{projectId}")
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public ProjectDto getProjectById(@PathVariable long projectId) {
         return projectMapper.mapProjectToDto(projectService.getProjectById(projectId));
     }
 
     @PutMapping(consumes = APPLICATION_JSON_VALUE)
+    @RolesAllowed({"ROLE_ADMIN"})
     public ProjectDto updateProject(@RequestBody final ProjectDto projectDto) {
         return projectMapper.mapProjectToDto(projectService.saveProject(projectMapper.mapDtoToProject(projectDto)));
     }
 
-    @DeleteMapping(value = "{projectId}")
+    @DeleteMapping("{projectId}")
+    @RolesAllowed({"ROLE_ADMIN"})
     public void deleteProject(@PathVariable long projectId) {
         projectService.deleteProject(projectId);
     }

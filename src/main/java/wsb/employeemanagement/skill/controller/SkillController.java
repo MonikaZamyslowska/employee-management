@@ -33,12 +33,12 @@ public class SkillController {
         return skillMapper.mapSkillListToDto(skillService.getAllSkills());
     }
 
-    @GetMapping(value = "{skillId}")
+    @GetMapping("{skillId}")
     public SkillDto getSkillById(@PathVariable long skillId) {
         return skillMapper.mapSkillToDto(skillService.getSkillById(skillId));
     }
 
-    @DeleteMapping(value = "{skillId}")
+    @DeleteMapping("{skillId}")
     public void deleteSkill(@PathVariable long skillId) {
         skillService.deleteSkill(skillId);
     }

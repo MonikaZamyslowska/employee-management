@@ -16,5 +16,4 @@ public class SkillDto {
     private String skillName;
     private SkillCategory skillCategory;
     private SkillLevel skillLevel;
-    private List<Employee> employees;
 }

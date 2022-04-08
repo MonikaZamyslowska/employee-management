@@ -30,14 +30,7 @@ public class Skill {
     @Column(name = "skill_level", nullable = false)
     private SkillLevel skillLevel;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "employee_skills",
-            joinColumns = {@JoinColumn(name = "skill_id")},
-            inverseJoinColumns = {@JoinColumn(name = "employee_id")}
-    )
-    private List<Employee> employees;
-// for tests only
+    // for tests only
     public Skill(String skillName, SkillLevel skillLevel) {
         this.skillName = skillName;
         this.skillLevel = skillLevel;

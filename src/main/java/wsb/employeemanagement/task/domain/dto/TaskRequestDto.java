@@ -1,4 +1,4 @@
-package wsb.employeemanagement.skill.domain.dto;
+package wsb.employeemanagement.task.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

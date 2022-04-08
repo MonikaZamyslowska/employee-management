@@ -15,8 +15,7 @@ public class SkillMapper {
                 skill.getId(),
                 skill.getSkillName(),
                 skill.getSkillCategory(),
-                skill.getSkillLevel(),
-                skill.getEmployees()
+                skill.getSkillLevel()
         );
     }
 
@@ -25,8 +24,7 @@ public class SkillMapper {
                 skillDto.getId(),
                 skillDto.getSkillName(),
                 skillDto.getSkillCategory(),
-                skillDto.getSkillLevel(),
-                skillDto.getEmployees()
+                skillDto.getSkillLevel()
         );
     }
 

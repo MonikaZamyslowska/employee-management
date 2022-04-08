@@ -1,7 +1,7 @@
 package wsb.employeemanagement.task.mapper;
 
 import org.springframework.stereotype.Component;
-import wsb.employeemanagement.skill.domain.dto.TaskRequestDto;
+import wsb.employeemanagement.task.domain.dto.TaskRequestDto;
 import wsb.employeemanagement.task.domain.TaskRequest;
 
 import java.util.List;
