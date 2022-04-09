@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wsb.employeemanagement.exception.SkillNotFoundException;
 import wsb.employeemanagement.skill.domain.Skill;
+import wsb.employeemanagement.skill.domain.SkillLevel;
 import wsb.employeemanagement.skill.repository.SkillRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class SkillService {
@@ -19,6 +22,12 @@ public class SkillService {
 
     public Skill saveSkill(Skill skill) {
         return skillRepository.save(skill);
+    }
+
+    public List<Skill> createSetSkill(Skill skill) {
+        return Stream.of(SkillLevel.values())
+                .map(level -> new Skill(skill.getSkillName(), skill.getSkillCategory(), level))
+                .collect(Collectors.toList());
     }
 
     public Skill getSkillById(long skillId) {

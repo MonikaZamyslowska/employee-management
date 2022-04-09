@@ -28,8 +28,6 @@ public class EmployeeServiceTest {
     private static final Employee FRODO_ENTITY = employee(FRODO_ID, FRODO);
     private static final EmployeeDto FRODO_DTO = new EmployeeDto(FRODO_ID, FRODO);
     private static final String JAVA = "JAVA";
-    private static final Skill JAVA_BEGINNER = new Skill(JAVA, BEGINNER);
-    private static final SkillDto JAVA_BEGINNER_DTO = SkillDto.builder().skillName(JAVA).skillLevel(BEGINNER).build();
 
     @InjectMocks
     private EmployeeService employeeService;

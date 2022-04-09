@@ -27,12 +27,12 @@ public class Skill {
     private SkillCategory skillCategory;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "skill_level", nullable = false)
+    @Column(name = "skill_level")
     private SkillLevel skillLevel;
 
-    // for tests only
-    public Skill(String skillName, SkillLevel skillLevel) {
+    public Skill(String skillName, SkillCategory skillCategory, SkillLevel skillLevel) {
         this.skillName = skillName;
+        this.skillCategory = skillCategory;
         this.skillLevel = skillLevel;
     }
 }

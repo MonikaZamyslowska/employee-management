@@ -35,7 +35,7 @@ public class Employee {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false, unique = true)
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Enumerated(value = EnumType.STRING)
@@ -47,7 +47,7 @@ public class Employee {
     private Integer capacity;
 
     @ManyToOne
-    @JoinColumn(name = "supervisor_id", nullable = false)
+    @JoinColumn(name = "supervisor_id")
     private Employee supervisor;
 
     @ManyToMany(cascade = CascadeType.ALL)

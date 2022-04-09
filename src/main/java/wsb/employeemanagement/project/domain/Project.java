@@ -24,7 +24,7 @@ public class Project {
     private String description;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id", nullable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     private Employee owner;
 
     @OneToMany(

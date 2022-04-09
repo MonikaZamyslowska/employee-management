@@ -24,8 +24,8 @@ public class SkillController {
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
-    public SkillDto createSkill(@RequestBody SkillDto skillDto) {
-        return skillMapper.mapSkillToDto(skillService.saveSkill(skillMapper.mapDtoToSkill(skillDto)));
+    public List<SkillDto> createSkill(@RequestBody SkillDto skillDto) {
+        return skillMapper.mapSkillListToDto(skillService.createSetSkill(skillMapper.mapDtoToSkill(skillDto)));
     }
 
     @GetMapping

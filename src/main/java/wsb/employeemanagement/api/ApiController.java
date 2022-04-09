@@ -32,7 +32,7 @@ public class ApiController {
             return "employee_main";
         } catch (EmployeeNotFoundException e) {
             request.logout();
-            return "index";
+            return "logout_index";
         }
     }
 
