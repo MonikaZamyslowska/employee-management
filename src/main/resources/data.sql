@@ -31,4 +31,11 @@ VALUES (3, 'ACCEPTED', 2, 2);
 INSERT INTO task_request(id, task_request_status, employee_id, task_id)
 VALUES (4, 'REJECTED', 2, 1);
 
+INSERT INTO employee_roles(employee_id, roles) VALUES (1, 'EMPLOYEE');
+INSERT INTO employee_roles(employee_id, roles) VALUES (2, 'EMPLOYEE');
+INSERT INTO employee_roles(employee_id, roles) VALUES (2, 'PM');
+INSERT INTO employee_roles(employee_id, roles) VALUES (3, 'ADMIN');
+
+INSERT INTO employee_skill(employee_id, skill_id) VALUES (1, 2);
+
 COMMIT;
