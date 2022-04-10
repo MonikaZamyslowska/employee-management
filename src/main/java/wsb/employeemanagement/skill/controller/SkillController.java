@@ -6,6 +6,7 @@ import wsb.employeemanagement.skill.domain.dto.SkillDto;
 import wsb.employeemanagement.skill.mapper.SkillMapper;
 import wsb.employeemanagement.skill.service.SkillService;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -24,21 +25,25 @@ public class SkillController {
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
+    @RolesAllowed({"ROLE_ADMIN"})
     public List<SkillDto> createSkill(@RequestBody SkillDto skillDto) {
         return skillMapper.mapSkillListToDto(skillService.createSetSkill(skillMapper.mapDtoToSkill(skillDto)));
     }
 
     @GetMapping
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public List<SkillDto> getSkills() {
         return skillMapper.mapSkillListToDto(skillService.getAllSkills());
     }
 
     @GetMapping("{skillId}")
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public SkillDto getSkillById(@PathVariable long skillId) {
         return skillMapper.mapSkillToDto(skillService.getSkillById(skillId));
     }
 
     @DeleteMapping("{skillId}")
+    @RolesAllowed({"ROLE_ADMIN"})
     public void deleteSkill(@PathVariable long skillId) {
         skillService.deleteSkill(skillId);
     }

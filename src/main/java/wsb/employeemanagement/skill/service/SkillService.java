@@ -2,6 +2,7 @@ package wsb.employeemanagement.skill.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wsb.employeemanagement.exception.SkillNotFoundException;
 import wsb.employeemanagement.skill.domain.Skill;
 import wsb.employeemanagement.skill.domain.SkillLevel;
@@ -24,6 +25,7 @@ public class SkillService {
         return skillRepository.save(skill);
     }
 
+    @Transactional
     public List<Skill> createSetSkill(Skill skill) {
         return Stream.of(SkillLevel.values())
                 .map(level -> new Skill(skill.getSkillName(), skill.getSkillCategory(), level))
@@ -38,6 +40,7 @@ public class SkillService {
         return skillRepository.findAll();
     }
 
+    @Transactional
     public void deleteSkill(long skillId) {
         skillRepository.removeById(skillId);
     }

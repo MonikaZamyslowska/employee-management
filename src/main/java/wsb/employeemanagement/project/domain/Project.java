@@ -31,7 +31,8 @@ public class Project {
             targetEntity = Task.class,
             mappedBy = "project",
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
+            fetch = FetchType.LAZY,
+            orphanRemoval = true
     )
     private List<Task> taskList;
 }
