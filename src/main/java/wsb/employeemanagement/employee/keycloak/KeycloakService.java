@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class KeycloakService {
+    private static String FIRST_PASSWORD = "Password123!";
+
     @Value("${keycloak.credentials.secret}")
     private String clientSecret;
 
@@ -56,7 +58,7 @@ public class KeycloakService {
 
             CredentialRepresentation credential = new CredentialRepresentation();
             credential.setType(CredentialRepresentation.PASSWORD);
-            credential.setValue(employee.getPassword());
+            credential.setValue(FIRST_PASSWORD);
             credential.setTemporary(true);
 
             UserRepresentation user = new UserRepresentation();

@@ -45,11 +45,6 @@ public class EmployeeService {
         return employeeRepository.findEmployeeByUsername(username).orElseThrow(EmployeeNotFoundException::new);
     }
 
-    public List<Employee> getEmployeeBySupervisor(long employeeId) {
-        Employee employee = getEmployeeById(employeeId);
-        return employeeRepository.findBySupervisor(employee);
-    }
-
     public void deleteEmployee(long employeeId) {
         employeeRepository.removeById(employeeId);
     }

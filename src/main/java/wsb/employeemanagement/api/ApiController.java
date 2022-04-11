@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.service.EmployeeService;
 import wsb.employeemanagement.exception.EmployeeNotFoundException;
@@ -23,28 +25,32 @@ public class ApiController {
         this.employeeService = employeeService;
     }
 
-    @GetMapping("/login")
+    @GetMapping("/desktop")
     @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
-    public String login(Principal principal, HttpServletRequest request, Model model) throws ServletException {
+    public ModelAndView login(Principal principal, HttpServletRequest request) throws ServletException {
+        ModelAndView modelAndView;
+
         try {
+            modelAndView = new ModelAndView("employee-desktop");
             Employee employee = employeeService.getEmployeeByUsername(principal.getName());
-            model.addAttribute("employee", employee);
-            return "employee_main";
+            modelAndView.addObject("employee", employee);
         } catch (EmployeeNotFoundException e) {
             request.logout();
-            return "logout_index";
+            modelAndView = new ModelAndView("login-failed");
         }
+
+        return modelAndView;
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
-    public String logout(HttpServletRequest request) throws ServletException {
+    public ModelAndView logout(HttpServletRequest request) throws ServletException {
         request.logout();
-        return "index";
+        return new ModelAndView("index");
     }
 
     @GetMapping(path = "/")
-    public String index() {
-        return "index";
+    public ModelAndView index() {
+        return new ModelAndView("index");
     }
 }

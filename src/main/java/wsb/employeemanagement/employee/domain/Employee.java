@@ -35,8 +35,9 @@ public class Employee {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false)
-    private String password;
+//    removed because is store in keycloak
+//    @Column(name = "password", nullable = false)
+//    private String password;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "grade", nullable = false)
@@ -45,10 +46,6 @@ public class Employee {
     @Column(name = "capacity")
     @Size(max = 100)
     private Integer capacity;
-
-    @ManyToOne
-    @JoinColumn(name = "supervisor_id")
-    private Employee supervisor;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(

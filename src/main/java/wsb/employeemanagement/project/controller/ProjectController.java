@@ -24,7 +24,7 @@ public class ProjectController {
         this.projectMapper = projectMapper;
     }
 
-    @PostMapping(consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = APPLICATION_JSON_VALUE, value = "/create")
     @RolesAllowed({"ROLE_ADMIN"})
     public ProjectDto createProject(@RequestBody final ProjectDto projectDto) {
         return projectMapper.mapProjectToDto(projectService.saveProject(projectMapper.mapDtoToProject(projectDto)));
@@ -36,7 +36,7 @@ public class ProjectController {
         return projectMapper.mapProjectListToDto(projectService.getAllProjects());
     }
 
-    @GetMapping("{projectId}")
+    @GetMapping("/projectId/{projectId}")
     @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public ProjectDto getProjectById(@PathVariable long projectId) {
         return projectMapper.mapProjectToDto(projectService.getProjectById(projectId));
@@ -48,7 +48,7 @@ public class ProjectController {
         return projectMapper.mapProjectToDto(projectService.saveProject(projectMapper.mapDtoToProject(projectDto)));
     }
 
-    @DeleteMapping("{projectId}")
+    @DeleteMapping("projectId/{projectId}")
     @RolesAllowed({"ROLE_ADMIN"})
     public void deleteProject(@PathVariable long projectId) {
         projectService.deleteProject(projectId);

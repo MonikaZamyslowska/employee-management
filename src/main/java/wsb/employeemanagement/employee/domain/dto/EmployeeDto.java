@@ -24,15 +24,25 @@ public class EmployeeDto {
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
     private Grade grade;
     private Integer capacity;
-    private Employee supervisor;
     private List<Skill> skillList;
     private List<Role> roles;
     private List<Task> tasks;
     private List<TaskRequest> taskRequests;
     private Project ownerProject;
+
+//    for view model
+    public EmployeeDto(Long id, String username, String firstName, String lastName, String email,
+                       Grade grade, Integer capacity) {
+        this.id = id;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.grade = grade;
+        this.capacity = capacity;
+    }
 
 //    for tests only
     public EmployeeDto(Long id, String firstName) {

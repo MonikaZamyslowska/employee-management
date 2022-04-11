@@ -1,9 +1,9 @@
-INSERT INTO EMPLOYEE(ID, CAPACITY, EMAIL, FIRST_NAME, GRADE, LAST_NAME, PASSWORD, USERNAME)
-VALUES (1, 100, 'employee@app.com', 'Pracownik', 'REGULAR', 'Test', 'password', 'user');
-INSERT INTO EMPLOYEE(ID, CAPACITY, EMAIL, FIRST_NAME, GRADE, LAST_NAME, PASSWORD, USERNAME)
-VALUES (2, 100, 'manager@app.com', 'Manager', 'SENIOR', 'Test', 'password', 'moderator');
-INSERT INTO EMPLOYEE(ID, CAPACITY, EMAIL, FIRST_NAME, GRADE, LAST_NAME, PASSWORD, USERNAME)
-VALUES (3, 100, 'admin@app.com', 'Admin', 'SPECIALIST', 'Test', 'password', 'admin');
+INSERT INTO EMPLOYEE(ID, CAPACITY, EMAIL, FIRST_NAME, GRADE, LAST_NAME, USERNAME)
+VALUES (1, 100, 'employee@app.com', 'Pracownik', 'REGULAR', 'Test', 'user');
+INSERT INTO EMPLOYEE(ID, CAPACITY, EMAIL, FIRST_NAME, GRADE, LAST_NAME, USERNAME)
+VALUES (2, 100, 'manager@app.com', 'Manager', 'SENIOR', 'Test', 'moderator');
+INSERT INTO EMPLOYEE(ID, CAPACITY, EMAIL, FIRST_NAME, GRADE, LAST_NAME, USERNAME)
+VALUES (3, 100, 'admin@app.com', 'Admin', 'SPECIALIST', 'Test', 'admin');
 
 INSERT INTO project(id, description, name, owner_id)
 VALUES (1, 'To jest testowy opis testowego PIERWSZEGO projektu', 'Testowy projekt - pierwszy', 2);

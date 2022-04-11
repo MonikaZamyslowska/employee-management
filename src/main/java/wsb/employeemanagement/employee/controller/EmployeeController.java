@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import wsb.employeemanagement.employee.domain.Employee;
+import wsb.employeemanagement.employee.domain.Grade;
 import wsb.employeemanagement.employee.domain.dto.EmployeeDto;
 import wsb.employeemanagement.employee.mapper.EmployeeMapper;
 import wsb.employeemanagement.employee.service.EmployeeService;
@@ -12,6 +15,8 @@ import wsb.employeemanagement.validation.Username;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -29,25 +34,28 @@ public class EmployeeController {
         this.employeeMapper = employeeMapper;
     }
 
-    @PostMapping(consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = APPLICATION_JSON_VALUE, value = "/create")
     @ResponseStatus(HttpStatus.CREATED)
     @RolesAllowed({"ROLE_ADMIN"})
-    public ResponseEntity createEmployee(@RequestBody @Valid EmployeeDto employeeDto) {
+    public String createEmployee(@RequestBody @Valid @ModelAttribute EmployeeDto employeeDto) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED)
+            ResponseEntity.status(HttpStatus.CREATED)
                     .body(employeeService.createEmployee(employeeMapper.mapDtoToEmployee(employeeDto)));
         } catch (EmployeeAlreadyExistsException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
+            ResponseEntity.status(400).body(e.getMessage());
         }
+        return "redirect:/all";
     }
 
-    @GetMapping
+    @GetMapping("/all")
     @RolesAllowed({"ROLE_ADMIN"})
-    public List<EmployeeDto> getEmployees() {
-        return employeeMapper.mapEmployeeListToDto(employeeService.getAllEmployees());
+    public ModelAndView getEmployees() {
+        ModelAndView modelAndView = new ModelAndView("list-employees");
+        modelAndView.addObject("employees", employeeMapper.mapEmployeeListToDto(employeeService.getAllEmployees()));
+        return modelAndView;
     }
 
-    @GetMapping("/{employeeId}")
+    @GetMapping("/employeeId/{employeeId}")
     @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public EmployeeDto getEmployeeById(@PathVariable long employeeId) {
         return employeeMapper.mapEmployeeToDto(employeeService.getEmployeeById(employeeId));
@@ -60,23 +68,39 @@ public class EmployeeController {
         return employeeMapper.mapEmployeeToDto(employeeService.getEmployeeByUsername(username));
     }
 
-    @GetMapping("/supervisor/{supervisorId}")
-    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
-    public List<EmployeeDto> getEmployeesBySupervisorId(@PathVariable long supervisorId) {
-        return employeeMapper.mapEmployeeListToDto(employeeService.getEmployeeBySupervisor(supervisorId));
-    }
-
-    @PutMapping
+    @PutMapping("/update/{employeeId}")
     @ResponseStatus(HttpStatus.OK)
     @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
-    public EmployeeDto updateEmployee(@RequestBody final EmployeeDto employeeDto) {
-        return employeeMapper.mapEmployeeToDto(employeeService.saveEmployee(employeeMapper.mapDtoToEmployee(employeeDto)));
+    public ModelAndView updateEmployee(@PathVariable long employeeId) {
+        ModelAndView modelAndView = new ModelAndView("add-employee-form");
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        modelAndView.addObject("employee", employee);
+        return modelAndView;
     }
 
-    @DeleteMapping("/{employeeId}")
+    @DeleteMapping("/delete/{employeeId}")
     @ResponseStatus(HttpStatus.OK)
     @RolesAllowed({"ROLE_ADMIN"})
-    public void deleteEmployee(@PathVariable long employeeId) {
+    public String deleteEmployee(@PathVariable long employeeId) {
         employeeService.deleteEmployee(employeeId);
+        return "redirect:/all";
+    }
+
+//    for view only
+
+    @GetMapping("/addEmployeeForm")
+    public ModelAndView addEmployeeForm() {
+        ModelAndView modelAndView = new ModelAndView("add-employee-form");
+        EmployeeDto newEmployee = new EmployeeDto();
+        List<Grade> grades = Arrays.asList(Grade.values().clone());
+        modelAndView.addObject("employee", newEmployee);
+        modelAndView.addObject("grades", grades);
+        return modelAndView;
+    }
+
+    @PostMapping("/saveEmployee")
+    public String saveEmployee(@ModelAttribute EmployeeDto employeeDto) {
+        employeeService.saveEmployee(employeeMapper.mapDtoToEmployee(employeeDto));
+        return "redirect:/all";
     }
 }
