@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.domain.Grade;
+import wsb.employeemanagement.employee.domain.Role;
 import wsb.employeemanagement.employee.domain.dto.EmployeeDto;
 import wsb.employeemanagement.employee.mapper.EmployeeMapper;
 import wsb.employeemanagement.employee.service.EmployeeService;
@@ -34,10 +35,9 @@ public class EmployeeController {
         this.employeeMapper = employeeMapper;
     }
 
-    @PostMapping(consumes = APPLICATION_JSON_VALUE, value = "/create")
-    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/create")
     @RolesAllowed({"ROLE_ADMIN"})
-    public String createEmployee(@RequestBody @Valid @ModelAttribute EmployeeDto employeeDto) {
+    public String createEmployee(@Valid @ModelAttribute EmployeeDto employeeDto) {
         try {
             ResponseEntity.status(HttpStatus.CREATED)
                     .body(employeeService.createEmployee(employeeMapper.mapDtoToEmployee(employeeDto)));
@@ -68,7 +68,7 @@ public class EmployeeController {
         return employeeMapper.mapEmployeeToDto(employeeService.getEmployeeByUsername(username));
     }
 
-    @PutMapping("/update/{employeeId}")
+    @GetMapping("/update/{employeeId}")
     @ResponseStatus(HttpStatus.OK)
     @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public ModelAndView updateEmployee(@PathVariable long employeeId) {
@@ -93,8 +93,10 @@ public class EmployeeController {
         ModelAndView modelAndView = new ModelAndView("add-employee-form");
         EmployeeDto newEmployee = new EmployeeDto();
         List<Grade> grades = Arrays.asList(Grade.values().clone());
+        List<Role> roles = Arrays.asList(Role.values().clone());
         modelAndView.addObject("employee", newEmployee);
         modelAndView.addObject("grades", grades);
+        modelAndView.addObject("roles", roles);
         return modelAndView;
     }
 

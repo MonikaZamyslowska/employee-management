@@ -19,17 +19,27 @@
     <h3>Dodaj nowego użytkownika</h3>
     <hr/>
 
-    <form method="POST" th:action="@{employees/create}" th:object="${employee}">
+    <form method="POST" th:action="@{/employees/create}" th:object="${employee}">
 
-        <input class="form-control col-4 mb-4" placeholder="Uzupełnij nazwę użytkownika" th:field="*{username}" type="hidden"/>
+        <input class="form-control col-4 mb-4" placeholder="Uzupełnij nazwę użytkownika" th:field="*{username}"
+               type="hidden"/>
         <input class="form-control col-4 mb-4" placeholder="Uzupełnij imię" th:field="*{firstName}" type="text"/>
         <input class="form-control col-4 mb-4" placeholder="Uzupełnij nazwisko" th:field="*{lastName}" type="text"/>
         <input class="form-control col-4 mb-4" placeholder="Uzupełnij e-mail" th:field="*{email}" type="text"/>
-        <select th:field="*{grade}">
+        <select class="form-control col-4 mb-4" th:field="*{grade}">
             <option value="">Wybierz stopień</option>
-            <option th:each="grade : ${grades}" th:value="${grade}" th:text="${grade}"></option>
+            <option th:each="grade : ${grades}" th:text="${grade}" th:value="${grade}"></option>
         </select>
-        <input class="form-control col-4 mb-4" placeholder="Enter capacity, max 100" th:field="*{capacity}" type="number" th:max="100" th:min="0"/>
+        <input class="form-control col-4 mb-4" placeholder="Enter capacity, max 100" th:field="*{capacity}"
+               th:max="100" th:min="0" type="number"/>
+        <label class="form-control col-4 mb-4">Role:
+            <input name="roles" th:each="role : ${roles}"
+                   th:field="*{roles}"
+                   th:text="${role}"
+                   th:value="${role}"
+                   type="checkbox"
+            />
+        </label>
         <input th:field="*{id}" type="hidden"/>
 
         <button class="btn btn-primary col-2" type="submit">Save</button>
