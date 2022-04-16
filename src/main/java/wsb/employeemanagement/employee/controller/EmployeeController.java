@@ -3,6 +3,7 @@ package wsb.employeemanagement.employee.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import wsb.employeemanagement.employee.domain.dto.EmployeeDto;
 import wsb.employeemanagement.employee.mapper.EmployeeMapper;
@@ -39,6 +40,13 @@ public class EmployeeController {
         } catch (EmployeeAlreadyExistsException e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
+    }
+
+    @PutMapping("/keycloack")
+    @ResponseStatus(HttpStatus.OK)
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
+    public EmployeeDto updateEmployeeKeycloack(@RequestBody @Valid EmployeeDto employeeDto) {
+        return employeeMapper.mapEmployeeToDto(employeeService.updateEmployeeKeycloack(employeeMapper.mapDtoToEmployee(employeeDto)));
     }
 
     @GetMapping

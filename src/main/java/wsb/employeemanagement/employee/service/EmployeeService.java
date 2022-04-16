@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wsb.employeemanagement.employee.domain.Employee;
+import wsb.employeemanagement.employee.keycloak.KeycloakException;
 import wsb.employeemanagement.employee.keycloak.KeycloakService;
 import wsb.employeemanagement.employee.repository.EmployeeRepository;
 import wsb.employeemanagement.exception.EmployeeAlreadyExistsException;
@@ -27,6 +28,14 @@ public class EmployeeService {
         verifyEmployeeDoesNotExist(employee.getUsername());
         keycloakService.createUser(employee);
         return employeeRepository.save(employee);
+    }
+
+    @Transactional
+    public Employee updateEmployeeKeycloack(Employee employee) {
+        if (!keycloakService.updateUser(employee))
+            throw new KeycloakException("Could not update user in keycloack");
+
+        return employee;
     }
 
     public Employee saveEmployee(Employee employee) {
@@ -56,7 +65,8 @@ public class EmployeeService {
 
 
     private void verifyEmployeeDoesNotExist(String username) {
-        employeeRepository.findEmployeeByUsername(username)
-                .orElseThrow(() -> new EmployeeAlreadyExistsException("Employee with username " + username + " already exists"));
+        if (employeeRepository.findEmployeeByUsername(username) != null) {
+            throw new EmployeeAlreadyExistsException("Employee with username " + username + " already exists");
+        }
     }
 }

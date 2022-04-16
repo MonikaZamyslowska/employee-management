@@ -1,5 +1,7 @@
 package wsb.employeemanagement.employee.keycloak;
 
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -84,6 +86,56 @@ public class KeycloakService {
             throw new KeycloakException("User cannot be updated. Internal keycloak fault.");
         }
 
+        return result;
+    }
+
+    public boolean updateUser(Employee employee) throws KeycloakException {
+        boolean result = false;
+        try {
+            //get keycloak instance
+            Keycloak keycloak = KeycloakBuilder.builder()
+                    .serverUrl(authUrl)
+                    .realm(realm)
+                    .username(adminName)
+                    .password(adminPassword)
+                    .grantType(OAuth2Constants.PASSWORD)
+                    .clientId(clientId)
+                    .clientSecret(clientSecret)
+                    .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
+                    .build();
+
+            //get resources
+            RealmResource realmResource = keycloak.realm(realm);
+            UsersResource usersResource = realmResource.users();
+            UserRepresentation user = findUserRepresentation(usersResource, employee.getUsername());
+            UserResource userResource = usersResource.get(user.getId());
+
+            //update password
+            if (employee.getPassword() != null && !employee.getPassword().isEmpty()) {
+                CredentialRepresentation passwordCred = new CredentialRepresentation();
+                passwordCred.setTemporary(false);
+                passwordCred.setType(CredentialRepresentation.PASSWORD);
+                passwordCred.setValue(employee.getPassword());
+                userResource.resetPassword(passwordCred);
+            }
+
+            //update roles
+            List<RoleRepresentation> realmRoles = realmResource.roles().list();
+            List<RoleRepresentation> newRoles = getKeycloakRoles(employee.getRoles(), realmRoles);
+            userResource.roles().realmLevel().remove(userResource.roles().realmLevel().listAll());
+            userResource.roles().realmLevel().add(newRoles);
+
+            //update personal info
+            UserRepresentation userRepresentation = userResource.toRepresentation();
+            userRepresentation.setFirstName(employee.getFirstName());
+            userRepresentation.setLastName(employee.getLastName());
+            userResource.update(userRepresentation);
+            result = true;
+        } catch (ClientErrorException e) {
+            throw new KeycloakClientException("User cannot be updated. Internal keycloak client fault.");
+        } catch (Exception e) {
+            throw new KeycloakException("User cannot be updated. Internal keycloak fault.");
+        }
         return result;
     }
 
