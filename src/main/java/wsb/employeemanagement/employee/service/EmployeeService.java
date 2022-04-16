@@ -32,8 +32,9 @@ public class EmployeeService {
 
     @Transactional
     public Employee updateEmployeeKeycloack(Employee employee) {
-        if (!keycloakService.updateUser(employee))
+        if (!keycloakService.updateUser(employee)) {
             throw new KeycloakException("Could not update user in keycloack");
+        }
 
         return employee;
     }
@@ -51,7 +52,7 @@ public class EmployeeService {
     }
 
     public Employee getEmployeeByUsername(String username) {
-        return employeeRepository.findEmployeeByUsername(username).orElseThrow(EmployeeNotFoundException::new);
+        return employeeRepository.findEmployeeByUsername(username);
     }
 
     public List<Employee> getEmployeeBySupervisor(long employeeId) {
@@ -59,8 +60,10 @@ public class EmployeeService {
         return employeeRepository.findBySupervisor(employee);
     }
 
-    public void deleteEmployee(long employeeId) {
-        employeeRepository.removeById(employeeId);
+    public void deleteEmployee(Employee employee) {
+        if (!keycloakService.deleteUser(employee)) {
+            throw new KeycloakException("Could not update user in keycloack");
+        }
     }
 
 

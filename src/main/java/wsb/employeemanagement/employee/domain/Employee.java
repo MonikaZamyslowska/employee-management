@@ -43,7 +43,6 @@ public class Employee {
     private Grade grade;
 
     @Column(name = "capacity")
-    @Size(max = 100)
     private Integer capacity;
 
     @ManyToOne

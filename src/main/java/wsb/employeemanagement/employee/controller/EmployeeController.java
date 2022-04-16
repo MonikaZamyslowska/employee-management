@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.domain.dto.EmployeeDto;
 import wsb.employeemanagement.employee.mapper.EmployeeMapper;
 import wsb.employeemanagement.employee.service.EmployeeService;
@@ -81,10 +82,10 @@ public class EmployeeController {
         return employeeMapper.mapEmployeeToDto(employeeService.saveEmployee(employeeMapper.mapDtoToEmployee(employeeDto)));
     }
 
-    @DeleteMapping("/{employeeId}")
+    @DeleteMapping()
     @ResponseStatus(HttpStatus.OK)
     @RolesAllowed({"ROLE_ADMIN"})
-    public void deleteEmployee(@PathVariable long employeeId) {
-        employeeService.deleteEmployee(employeeId);
+    public void deleteEmployee(@RequestBody Employee employee) {
+        employeeService.deleteEmployee(employee);
     }
 }

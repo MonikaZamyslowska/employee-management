@@ -19,9 +19,10 @@
     <h3>Dodaj nowego użytkownika</h3>
     <hr/>
 
-    <form method="POST" th:action="@{/createEmployee}" th:object="${employee}">
+    <form method="POST" th:action="@{/saveEmployee}" th:object="${employee}">
 
         <input class="form-control col-4 mb-4" placeholder="Uzupełnij nazwę użytkownika" th:field="*{username}" type="text"/>
+        <input class="form-control col-4 mb-4" placeholder="Uzupełnij hasło" th:field="*{password}" type="text"/>
         <input class="form-control col-4 mb-4" placeholder="Uzupełnij imię" th:field="*{firstName}" type="text"/>
         <input class="form-control col-4 mb-4" placeholder="Uzupełnij nazwisko" th:field="*{lastName}" type="text"/>
         <input class="form-control col-4 mb-4" placeholder="Uzupełnij e-mail" th:field="*{email}" type="text"/>

@@ -26,8 +26,7 @@ public class ProjectService {
 
     @Transactional
     public Project saveProject(Project project) {
-        Employee employee = employeeRepository.findEmployeeByUsername(project.getOwner().getUsername())
-                .orElseThrow(EmployeeNotFoundException::new);
+        Employee employee = employeeRepository.findEmployeeByUsername(project.getOwner().getUsername());
 
         project.setOwner(employee);
         return projectRepository.save(project);

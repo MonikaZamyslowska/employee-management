@@ -11,7 +11,6 @@ import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.domain.Grade;
 import wsb.employeemanagement.employee.domain.Role;
 import wsb.employeemanagement.employee.domain.dto.EmployeeDto;
-import wsb.employeemanagement.employee.mapper.EmployeeMapper;
 import wsb.employeemanagement.employee.service.EmployeeService;
 import wsb.employeemanagement.exception.EmployeeNotFoundException;
 
@@ -27,12 +26,10 @@ public class ModelViewController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelViewController.class);
 
     private EmployeeService employeeService;
-    private EmployeeMapper employeeMapper;
 
     @Autowired
-    public ModelViewController(EmployeeService employeeService, EmployeeMapper employeeMapper) {
+    public ModelViewController(EmployeeService employeeService) {
         this.employeeService = employeeService;
-        this.employeeMapper = employeeMapper;
     }
 
     //login and logout view
@@ -80,11 +77,15 @@ public class ModelViewController {
         return modelAndView;
     }
 
-    @PostMapping("/createEmployee")
+    @PostMapping("/saveEmployee")
     @RolesAllowed({"ROLE_ADMIN"})
-    public String createEmployee(Employee employee) {
+    public String createOrUpdateEmployee(Employee employee) {
         try {
-            employeeService.createEmployee(employee);
+            if (employeeService.getEmployeeByUsername(employee.getUsername()) != null) {
+                employeeService.updateEmployeeKeycloack(employee);
+            } else {
+                employeeService.createEmployee(employee);
+            }
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             return "operation-failed";
@@ -92,14 +93,7 @@ public class ModelViewController {
         return "list-employees";
     }
 
-    @PostMapping("/saveEmployee")
-    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
-    public String saveEmployee(@ModelAttribute Employee employee) {
-        employeeService.saveEmployee(employee);
-        return "redirect:/all";
-    }
-
-    @GetMapping("/updateEmployee/{employeeId}")
+    @GetMapping("keycloak/updateEmployee/{employeeId}")
     @RolesAllowed({"ROLE_ADMIN"})
     public ModelAndView updateEmployee(@PathVariable long employeeId) {
         ModelAndView modelAndView = new ModelAndView("add-employee");
@@ -108,14 +102,17 @@ public class ModelViewController {
 
         List<Grade> allGrades = Arrays.asList(Grade.values().clone());
         List<Role> allRoles = Arrays.asList(Role.values().clone());
+        modelAndView.addObject("grades", allGrades);
+        modelAndView.addObject("roles", allRoles);
+
         return modelAndView;
     }
 
     @DeleteMapping("/deleteEmployee/{employeeId}")
     @RolesAllowed({"ROLE_ADMIN"})
-    public String deleteEmployee(@PathVariable long employeeId) {
-        employeeService.deleteEmployee(employeeId);
-        return "redirect:/all";
+    public String deleteEmployee(Employee employee) {
+        employeeService.deleteEmployee(employee);
+        return "list-employees";
     }
 
     @GetMapping("/allEmployees")

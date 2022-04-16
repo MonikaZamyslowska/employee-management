@@ -30,7 +30,10 @@ public class KeycloakService {
     @Value("${keycloak.realm}")
     private String realm;
 
-    @Value("${keycloak.resource}")
+    @Value("${custom.keycloak.realmMaster}")
+    private String realmMaster;
+
+    @Value("${custom.keycloak.clientId}")
     private String clientId;
 
     @Value("${keycloak.auth-server-url}")
@@ -47,14 +50,7 @@ public class KeycloakService {
         boolean result;
 
         try {
-            Keycloak keycloak = KeycloakBuilder.builder()
-                    .serverUrl(authUrl)
-                    .realm(realm)
-                    .username(adminName)
-                    .password(adminPassword)
-                    .clientId(clientId)
-                    .clientSecret(clientSecret)
-                    .build();
+            Keycloak keycloak = getKeycloakInstance();
 
             CredentialRepresentation credential = new CredentialRepresentation();
             credential.setType(CredentialRepresentation.PASSWORD);
@@ -83,7 +79,7 @@ public class KeycloakService {
         } catch (ClientErrorException e) {
             throw new KeycloakClientException("User cannot be created. Internal keycloak client fault.");
         } catch (Exception e) {
-            throw new KeycloakException("User cannot be updated. Internal keycloak fault.");
+            throw new KeycloakException("User cannot be created. Internal keycloak fault.");
         }
 
         return result;
@@ -93,16 +89,7 @@ public class KeycloakService {
         boolean result = false;
         try {
             //get keycloak instance
-            Keycloak keycloak = KeycloakBuilder.builder()
-                    .serverUrl(authUrl)
-                    .realm(realm)
-                    .username(adminName)
-                    .password(adminPassword)
-                    .grantType(OAuth2Constants.PASSWORD)
-                    .clientId(clientId)
-                    .clientSecret(clientSecret)
-                    .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
-                    .build();
+            Keycloak keycloak = getKeycloakInstance();
 
             //get resources
             RealmResource realmResource = keycloak.realm(realm);
@@ -139,6 +126,28 @@ public class KeycloakService {
         return result;
     }
 
+    public boolean deleteUser(Employee employee) throws KeycloakException {
+        boolean result = false;
+        try {
+            //get keycloak instance
+            Keycloak keycloak = getKeycloakInstance();
+
+            //get resources
+            RealmResource realmResource = keycloak.realm(realm);
+            UsersResource usersResource = realmResource.users();
+            UserRepresentation user = findUserRepresentation(usersResource, employee.getUsername());
+            UserResource userResource = usersResource.get(user.getId());
+
+            userResource.remove();
+            result = true;
+        } catch (ClientErrorException e) {
+            throw new KeycloakClientException("User cannot be updated. Internal keycloak client fault.");
+        } catch (Exception e) {
+            throw new KeycloakException("User cannot be updated. Internal keycloak fault.");
+        }
+        return result;
+    }
+
 
     private UserRepresentation findUserRepresentation(UsersResource usersResource, String username) {
         return usersResource.search(username)
@@ -155,5 +164,14 @@ public class KeycloakService {
         return roleRepresentations.stream()
                 .filter(x -> rolesAsString.contains(x.getName()))
                 .collect(Collectors.toList());
+    }
+
+    private Keycloak getKeycloakInstance() {
+        return Keycloak.getInstance(
+                authUrl,
+                realmMaster,
+                adminName,
+                adminPassword,
+                clientId);
     }
 }

@@ -37,9 +37,9 @@
             <td th:text="${employee.username}"/>
             <td th:text="${employee.email}" />
             <td>
-                <a th:href="@{'/updateEmployee/' + ${employee.id}}" class="btn btn-info">Aktualizuj</a>
+                <a th:href="@{'/keycloak/updateEmployee/' + ${employee.id}}" class="btn btn-info">Aktualizuj</a>
 
-                <a th:href="@{'/updateEmployee/' + ${employee.id}}" class="btn btn-danger ml-2">Usuń</a>
+                <a th:href="@{'/deleteEmployee/' + ${employee.id}}" class="btn btn-danger ml-2">Usuń</a>
             </td>
         </tr>
         </tbody>
