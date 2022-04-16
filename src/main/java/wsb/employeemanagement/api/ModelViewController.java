@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import wsb.employeemanagement.employee.domain.Employee;
@@ -65,8 +66,8 @@ public class ModelViewController {
         return modelAndView;
     }
 
-    @GetMapping("/addEmployeeForm")
-    public ModelAndView addEmployeeForm() {
+    @GetMapping("/addEmployee")
+    public ModelAndView addEmployeeModel() {
         ModelAndView modelAndView = new ModelAndView("add-employee");
         EmployeeDto newEmployee = new EmployeeDto();
         List<Grade> grades = Arrays.asList(Grade.values().clone());
@@ -79,7 +80,7 @@ public class ModelViewController {
 
     @PostMapping("/saveEmployee")
     @RolesAllowed({"ROLE_ADMIN"})
-    public String createOrUpdateEmployee(Employee employee) {
+    public String createOrUpdateEmployee(Employee employee, Model model) {
         try {
             if (employeeService.getEmployeeByUsername(employee.getUsername()) != null) {
                 employeeService.updateEmployeeKeycloack(employee);
@@ -90,12 +91,12 @@ public class ModelViewController {
             LOGGER.error(e.getMessage());
             return "operation-failed";
         }
-        return "list-employees";
+        return "redirect:/allEmployees";
     }
 
-    @GetMapping("keycloak/updateEmployee/{employeeId}")
+    @GetMapping("/keycloak/updateEmployee/{employeeId}")
     @RolesAllowed({"ROLE_ADMIN"})
-    public ModelAndView updateEmployee(@PathVariable long employeeId) {
+    public ModelAndView updateEmployeeModel(@PathVariable long employeeId) {
         ModelAndView modelAndView = new ModelAndView("add-employee");
         Employee employee = employeeService.getEmployeeById(employeeId);
         modelAndView.addObject("employee", employee);
@@ -108,11 +109,16 @@ public class ModelViewController {
         return modelAndView;
     }
 
-    @DeleteMapping("/deleteEmployee/{employeeId}")
+    @GetMapping("/deleteEmployee/{employeeId}")
     @RolesAllowed({"ROLE_ADMIN"})
-    public String deleteEmployee(Employee employee) {
-        employeeService.deleteEmployee(employee);
-        return "list-employees";
+    public String deleteEmployee(@PathVariable long employeeId) {
+        try {
+            employeeService.deleteEmployee(employeeId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return "operation-failed";
+        }
+        return "redirect:/allEmployees";
     }
 
     @GetMapping("/allEmployees")

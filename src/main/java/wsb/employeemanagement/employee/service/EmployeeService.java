@@ -35,8 +35,7 @@ public class EmployeeService {
         if (!keycloakService.updateUser(employee)) {
             throw new KeycloakException("Could not update user in keycloack");
         }
-
-        return employee;
+        return employeeRepository.save(employee);
     }
 
     public Employee saveEmployee(Employee employee) {
@@ -48,7 +47,7 @@ public class EmployeeService {
     }
 
     public Employee getEmployeeById(long employeeId) {
-        return employeeRepository.findById(employeeId).orElseThrow(EmployeeNotFoundException::new);
+        return employeeRepository.findById(employeeId);
     }
 
     public Employee getEmployeeByUsername(String username) {
@@ -60,12 +59,15 @@ public class EmployeeService {
         return employeeRepository.findBySupervisor(employee);
     }
 
-    public void deleteEmployee(Employee employee) {
+    @Transactional
+    public void deleteEmployee(long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId);
+
         if (!keycloakService.deleteUser(employee)) {
             throw new KeycloakException("Could not update user in keycloack");
         }
+        employeeRepository.removeById(employeeId);
     }
-
 
     private void verifyEmployeeDoesNotExist(String username) {
         if (employeeRepository.findEmployeeByUsername(username) != null) {

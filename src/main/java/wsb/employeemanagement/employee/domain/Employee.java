@@ -87,4 +87,16 @@ public class Employee {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project ownerProject;
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", grade=" + grade +
+                ", capacity=" + capacity +
+                '}';
+    }
 }

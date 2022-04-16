@@ -41,6 +41,10 @@
         <td th:text="${employee.lastName}"/>
         <td th:text="${employee.username}"/>
         <td th:text="${employee.email}"/>
+<!--        TODO: umozliwic tylko edycje hasla-->
+        <td>
+            <a th:href="@{'/keycloak/updateEmployee/' + ${employee.id}}" class="btn btn-info">Aktualizuj</a>
+        </td>
     </tr>
     </tbody>
     <!--        <div class="leftContainer">-->

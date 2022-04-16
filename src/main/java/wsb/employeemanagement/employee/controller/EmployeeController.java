@@ -82,10 +82,10 @@ public class EmployeeController {
         return employeeMapper.mapEmployeeToDto(employeeService.saveEmployee(employeeMapper.mapDtoToEmployee(employeeDto)));
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/{employeeId}")
     @ResponseStatus(HttpStatus.OK)
     @RolesAllowed({"ROLE_ADMIN"})
-    public void deleteEmployee(@RequestBody Employee employee) {
-        employeeService.deleteEmployee(employee);
+    public void deleteEmployee(@PathVariable long employeeId) {
+        employeeService.deleteEmployee(employeeId);
     }
 }
