@@ -53,7 +53,7 @@ public class ModelViewController {
     @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public ModelAndView login(Principal principal, HttpServletRequest request) throws ServletException {
         ModelAndView modelAndView;
-
+        System.out.println("kupa");
         try {
             modelAndView = new ModelAndView("employee-desktop");
             Employee employee = employeeService.getEmployeeByUsername(principal.getName());
@@ -80,10 +80,11 @@ public class ModelViewController {
 
     @PostMapping("/saveEmployee")
     @RolesAllowed({"ROLE_ADMIN"})
-    public String createOrUpdateEmployee(Employee employee, Model model) {
+    public String createOrUpdateEmployee(Employee employee) {
         try {
             if (employeeService.getEmployeeByUsername(employee.getUsername()) != null) {
                 employeeService.updateEmployeeKeycloack(employee);
+                employeeService.saveEmployee(employee);
             } else {
                 employeeService.createEmployee(employee);
             }
@@ -95,7 +96,7 @@ public class ModelViewController {
     }
 
     @GetMapping("/keycloak/updateEmployee/{employeeId}")
-    @RolesAllowed({"ROLE_ADMIN"})
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public ModelAndView updateEmployeeModel(@PathVariable long employeeId) {
         ModelAndView modelAndView = new ModelAndView("add-employee");
         Employee employee = employeeService.getEmployeeById(employeeId);
@@ -105,6 +106,17 @@ public class ModelViewController {
         List<Role> allRoles = Arrays.asList(Role.values().clone());
         modelAndView.addObject("grades", allGrades);
         modelAndView.addObject("roles", allRoles);
+
+        return modelAndView;
+    }
+
+    @GetMapping("/keycloak/updatePassword/{employeeId}")
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
+    public ModelAndView updateEmployeePasswordModel(@PathVariable long employeeId) {
+        ModelAndView modelAndView = new ModelAndView("update_employee_password");
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        modelAndView.addObject("employee", employee);
+
 
         return modelAndView;
     }

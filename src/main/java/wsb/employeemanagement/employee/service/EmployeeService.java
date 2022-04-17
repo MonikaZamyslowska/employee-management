@@ -31,13 +31,13 @@ public class EmployeeService {
     }
 
     @Transactional
-    public Employee updateEmployeeKeycloack(Employee employee) {
+    public void updateEmployeeKeycloack(Employee employee) {
         if (!keycloakService.updateUser(employee)) {
             throw new KeycloakException("Could not update user in keycloack");
         }
-        return employeeRepository.save(employee);
     }
 
+    @Transactional
     public Employee saveEmployee(Employee employee) {
         return employeeRepository.save(employee);
     }

@@ -41,17 +41,16 @@
         <td th:text="${employee.lastName}"/>
         <td th:text="${employee.username}"/>
         <td th:text="${employee.email}"/>
-<!--        TODO: umozliwic tylko edycje hasla-->
         <td>
-            <a th:href="@{'/keycloak/updateEmployee/' + ${employee.id}}" class="btn btn-info">Aktualizuj</a>
+            <a th:href="@{'/keycloak/updatePassword/' + ${employee.id}}" class="btn btn-info">Aktualizuj hasło</a>
         </td>
     </tr>
     </tbody>
-    <!--        <div class="leftContainer">-->
-    <!--            <a href="/projects" th:href="@{/projects}" class="btn btn-large btn-primary">PROJEKTY</a>-->
-    <!--        </div>-->
+    <div class="leftContainer">
+        <a class="btn btn-large btn-primary" href="/projects" th:href="@{/projects}">PROJEKTY</a>
+    </div>
     <div class="leftContainer" sec:authorize="hasAuthority('ROLE_ADMIN')">
-        <a href="/employees/all" th:href="@{/allEmployees}" class="btn btn-large btn-primary">UŻYTKOWNICY</a>
+        <a th:href="@{/allEmployees}" class="btn btn-large btn-primary">UŻYTKOWNICY</a>
     </div>
     <!--        <div class="rightContainer" sec:authorize="hasAuthority('ROLE_ADMIN')">-->
     <!--            <a th:href="@{/addEmployeeForm}" class="btn btn-large btn-primary">DODAJ UŻYTKOWNIKA</a>-->

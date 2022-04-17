@@ -8,6 +8,7 @@ import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -45,6 +46,9 @@ public class KeycloakService {
     @Value("${custom.keycloak.admin.password}")
     private String adminPassword;
 
+    @Value("${keycloak.resource}")
+    private String resource;
+
 
     public boolean createUser(Employee employee) throws KeycloakException {
         boolean result;
@@ -66,14 +70,16 @@ public class KeycloakService {
 
             RealmResource realmResource = keycloak.realm(realm);
             UsersResource usersResource = realmResource.users();
+            ClientRepresentation clientRepresentation = realmResource.clients().findByClientId(resource).get(0);
 
             Response response = usersResource.create(user);
             String userId = CreatedResponseUtil.getCreatedId(response);
             UserResource userResource = usersResource.get(userId);
 
-            List<RoleRepresentation> realmRoles = realmResource.roles().list();
-            List<RoleRepresentation> userRoles = getKeycloakRoles(employee.getRoles(), realmRoles);
-            userResource.roles().realmLevel().add(userRoles);
+            List<RoleRepresentation> clientRoles = realmResource.clients().get(clientRepresentation.getId())
+                    .roles().list();
+            List<RoleRepresentation> newRoles = getKeycloakRoles(employee.getRoles(), clientRoles);
+            userResource.roles().clientLevel(clientRepresentation.getId()).add(newRoles);
 
             result = true;
         } catch (ClientErrorException e) {
@@ -96,6 +102,7 @@ public class KeycloakService {
             UsersResource usersResource = realmResource.users();
             UserRepresentation user = findUserRepresentation(usersResource, employee.getUsername());
             UserResource userResource = usersResource.get(user.getId());
+            ClientRepresentation clientRepresentation = realmResource.clients().findByClientId(resource).get(0);
 
             //update password
             if (employee.getPassword() != null && !employee.getPassword().isEmpty()) {
@@ -107,16 +114,19 @@ public class KeycloakService {
             }
 
             //update roles
-            List<RoleRepresentation> realmRoles = realmResource.roles().list();
-            List<RoleRepresentation> newRoles = getKeycloakRoles(employee.getRoles(), realmRoles);
-            userResource.roles().realmLevel().remove(userResource.roles().realmLevel().listAll());
-            userResource.roles().realmLevel().add(newRoles);
+            List<RoleRepresentation> clientRoles = realmResource.clients().get(clientRepresentation.getId())
+                    .roles().list();
+            List<RoleRepresentation> newRoles = getKeycloakRoles(employee.getRoles(), clientRoles);
+            userResource.roles().clientLevel(clientRepresentation.getId())
+                    .remove(userResource.roles().clientLevel(clientRepresentation.getId()).listAll());
+            userResource.roles().clientLevel(clientRepresentation.getId()).add(newRoles);
 
             //update personal info
             UserRepresentation userRepresentation = userResource.toRepresentation();
             userRepresentation.setFirstName(employee.getFirstName());
             userRepresentation.setLastName(employee.getLastName());
             userResource.update(userRepresentation);
+
             result = true;
         } catch (ClientErrorException e) {
             throw new KeycloakClientException("User cannot be updated. Internal keycloak client fault.");
@@ -150,27 +160,12 @@ public class KeycloakService {
         return result;
     }
 
-
     private UserRepresentation findUserRepresentation(UsersResource usersResource, String username) {
         return usersResource.search(username, null, null)
                 .stream()
                 .filter(u -> u.getUsername().equalsIgnoreCase(username))
                 .findFirst()
                 .orElseThrow(() -> new KeycloakClientException("Updated user doesn't exist"));
-    }
-
-    public static UserRepresentation findUserByUsername(RealmResource realm, String username) {
-        List<UserRepresentation> userRepresentationList = realm.users().search(username, null, null);
-        if (userRepresentationList.size() == 1) {
-            return userRepresentationList.get(1);
-        }
-        if (userRepresentationList.size() > 1) {
-            for (UserRepresentation rep : userRepresentationList) {
-                if (rep.getUsername().equalsIgnoreCase(username))
-                    return rep;
-            }
-        }
-        return null;
     }
 
     protected List<RoleRepresentation> getKeycloakRoles(List<Role> roles, List<RoleRepresentation> roleRepresentations) {

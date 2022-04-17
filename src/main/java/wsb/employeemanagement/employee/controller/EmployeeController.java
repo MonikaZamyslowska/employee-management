@@ -43,13 +43,6 @@ public class EmployeeController {
         }
     }
 
-    @PutMapping("/keycloack")
-    @ResponseStatus(HttpStatus.OK)
-    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
-    public EmployeeDto updateEmployeeKeycloack(@RequestBody @Valid EmployeeDto employeeDto) {
-        return employeeMapper.mapEmployeeToDto(employeeService.updateEmployeeKeycloack(employeeMapper.mapDtoToEmployee(employeeDto)));
-    }
-
     @GetMapping
     @RolesAllowed({"ROLE_ADMIN"})
     public List<EmployeeDto> getEmployees() {
