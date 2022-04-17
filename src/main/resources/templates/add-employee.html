@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Dodaj pracownika</title>
+    <title>Dodaj/edytuj pracownika</title>
     <link href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css"
           rel="stylesheet"
           type="text/css"/>
@@ -16,7 +16,7 @@
 
 <div class="container">
 
-    <h3>Dodaj nowego użytkownika</h3>
+    <h3>Dodaj/edytuj użytkownika</h3>
     <hr/>
 
     <form method="POST" th:action="@{/saveEmployee}" th:object="${employee}">

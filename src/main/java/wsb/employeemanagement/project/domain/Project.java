@@ -2,6 +2,7 @@ package wsb.employeemanagement.project.domain;
 
 import lombok.*;
 import wsb.employeemanagement.employee.domain.Employee;
+import wsb.employeemanagement.task.domain.OpenCloseStatus;
 import wsb.employeemanagement.task.domain.Task;
 
 import javax.persistence.*;
@@ -23,6 +24,10 @@ public class Project {
     @Column(name = "description")
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "project_status")
+    private OpenCloseStatus projectStatus;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private Employee owner;
@@ -30,9 +35,8 @@ public class Project {
     @OneToMany(
             targetEntity = Task.class,
             mappedBy = "project",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            orphanRemoval = true
+            cascade = {CascadeType.ALL, CascadeType.REMOVE},
+            fetch = FetchType.LAZY
     )
     private List<Task> taskList;
 }

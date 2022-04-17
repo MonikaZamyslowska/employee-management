@@ -7,7 +7,7 @@ import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.domain.Role;
 import wsb.employeemanagement.exception.TaskNotFoundException;
 import wsb.employeemanagement.task.domain.Task;
-import wsb.employeemanagement.task.domain.TaskStatus;
+import wsb.employeemanagement.task.domain.OpenCloseStatus;
 import wsb.employeemanagement.task.repository.TaskRepository;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class TaskService {
         return taskRepository.findTasksByRole(role);
     }
 
-    public List<Task> getAllByStatus(TaskStatus taskStatus) {
-        return taskRepository.findTasksByTaskStatus(taskStatus);
+    public List<Task> getAllByStatus(OpenCloseStatus openCloseStatus) {
+        return taskRepository.findTasksByTaskStatus(openCloseStatus);
     }
 }

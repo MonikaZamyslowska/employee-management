@@ -1,5 +1,5 @@
 package wsb.employeemanagement.task.domain;
 
-public enum TaskStatus {
+public enum OpenCloseStatus {
     OPEN, CLOSED
 }

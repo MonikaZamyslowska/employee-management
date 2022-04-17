@@ -15,6 +15,7 @@ public class ProjectMapper {
                 project.getId(),
                 project.getName(),
                 project.getDescription(),
+                project.getProjectStatus(),
                 project.getOwner(),
                 project.getTaskList()
         );
@@ -25,6 +26,7 @@ public class ProjectMapper {
                 projectDto.getId(),
                 projectDto.getName(),
                 projectDto.getDescription(),
+                projectDto.getProjectStatus(),
                 projectDto.getOwner(),
                 projectDto.getTaskList()
         );

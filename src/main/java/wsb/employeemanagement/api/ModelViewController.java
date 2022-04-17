@@ -5,15 +5,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.domain.Grade;
 import wsb.employeemanagement.employee.domain.Role;
-import wsb.employeemanagement.employee.domain.dto.EmployeeDto;
 import wsb.employeemanagement.employee.service.EmployeeService;
 import wsb.employeemanagement.exception.EmployeeNotFoundException;
+import wsb.employeemanagement.project.domain.Project;
+import wsb.employeemanagement.project.domain.dto.ProjectDto;
+import wsb.employeemanagement.project.service.ProjectService;
+import wsb.employeemanagement.task.domain.OpenCloseStatus;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.ServletException;
@@ -26,11 +30,13 @@ import java.util.List;
 public class ModelViewController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelViewController.class);
 
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
+    private ProjectService projectService;
 
     @Autowired
-    public ModelViewController(EmployeeService employeeService) {
+    public ModelViewController(EmployeeService employeeService, ProjectService projectService) {
         this.employeeService = employeeService;
+        this.projectService = projectService;
     }
 
     //login and logout view
@@ -53,7 +59,6 @@ public class ModelViewController {
     @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public ModelAndView login(Principal principal, HttpServletRequest request) throws ServletException {
         ModelAndView modelAndView;
-        System.out.println("kupa");
         try {
             modelAndView = new ModelAndView("employee-desktop");
             Employee employee = employeeService.getEmployeeByUsername(principal.getName());
@@ -67,9 +72,10 @@ public class ModelViewController {
     }
 
     @GetMapping("/addEmployee")
+    @RolesAllowed({"ROLE_ADMIN"})
     public ModelAndView addEmployeeModel() {
         ModelAndView modelAndView = new ModelAndView("add-employee");
-        EmployeeDto newEmployee = new EmployeeDto();
+        Employee newEmployee = new Employee();
         List<Grade> grades = Arrays.asList(Grade.values().clone());
         List<Role> roles = Arrays.asList(Role.values().clone());
         modelAndView.addObject("employee", newEmployee);
@@ -79,7 +85,7 @@ public class ModelViewController {
     }
 
     @PostMapping("/saveEmployee")
-    @RolesAllowed({"ROLE_ADMIN"})
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public String createOrUpdateEmployee(Employee employee) {
         try {
             if (employeeService.getEmployeeByUsername(employee.getUsername()) != null) {
@@ -92,7 +98,7 @@ public class ModelViewController {
             LOGGER.error(e.getMessage());
             return "operation-failed";
         }
-        return "redirect:/allEmployees";
+        return "redirect:/desktop";
     }
 
     @GetMapping("/keycloak/updateEmployee/{employeeId}")
@@ -117,7 +123,6 @@ public class ModelViewController {
         Employee employee = employeeService.getEmployeeById(employeeId);
         modelAndView.addObject("employee", employee);
 
-
         return modelAndView;
     }
 
@@ -139,5 +144,55 @@ public class ModelViewController {
         ModelAndView modelAndView = new ModelAndView("list-employees");
         modelAndView.addObject("employees", employeeService.getAllEmployees());
         return modelAndView;
+    }
+
+    // Projects
+
+    @GetMapping("/allProjects")
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
+    public ModelAndView getProjects() {
+        ModelAndView modelAndView = new ModelAndView("list-projects");
+        List<Project> projects = projectService.getAllProjects();
+        modelAndView.addObject("projects", projects);
+        return modelAndView;
+    }
+
+    @GetMapping("/addProject")
+    @RolesAllowed({"ROLE_ADMIN"})
+    public ModelAndView addProjectModel() {
+        ModelAndView modelAndView = new ModelAndView("add-project");
+        ProjectDto projectDto = new ProjectDto();
+        List<Employee> employees = employeeService.getEmployeeByRole(Role.PM);
+        List<OpenCloseStatus> openCloseStatuses = Arrays.asList(OpenCloseStatus.values().clone());
+        modelAndView.addObject("project", projectDto);
+        modelAndView.addObject("employees", employees);
+        modelAndView.addObject("statuses", openCloseStatuses);
+        return modelAndView;
+    }
+
+    @GetMapping("/updateProject/{projectId}")
+    @RolesAllowed({"ROLE_ADMIN"})
+    public ModelAndView updateProjectModel(@PathVariable long projectId) {
+        ModelAndView modelAndView = new ModelAndView("add-project");
+        Project project = projectService.getProjectById(projectId);
+        List<Employee> employees = employeeService.getEmployeeByRole(Role.PM);
+        List<OpenCloseStatus> openCloseStatuses = Arrays.asList(OpenCloseStatus.values().clone());
+        modelAndView.addObject("project", project);
+        modelAndView.addObject("employees", employees);
+        modelAndView.addObject("statuses", openCloseStatuses);
+        return modelAndView;
+    }
+
+    @PostMapping("/saveProject")
+    @RolesAllowed({"ROLE_ADMIN"})
+    public String createOrUpdateProject(Project project) {
+        try {
+            System.out.println("kupa");
+            projectService.saveProject(project);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return "operation-failed";
+        }
+        return "redirect:/allProjects";
     }
 }

@@ -22,7 +22,7 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "task_status")
-    private TaskStatus taskStatus;
+    private OpenCloseStatus taskStatus;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
@@ -44,6 +44,6 @@ public class Task {
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "task", cascade = {CascadeType.ALL, CascadeType.REMOVE})
     private List<TaskRequest> taskRequests;
 }

@@ -5,13 +5,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.repository.EmployeeRepository;
-import wsb.employeemanagement.exception.EmployeeNotFoundException;
 import wsb.employeemanagement.exception.ProjectNotFoundException;
-import wsb.employeemanagement.exception.UserNotFoundException;
 import wsb.employeemanagement.project.domain.Project;
 import wsb.employeemanagement.project.repository.ProjectRepository;
+import wsb.employeemanagement.task.domain.Task;
+import wsb.employeemanagement.task.domain.TaskRequest;
+import wsb.employeemanagement.task.repository.TaskRepository;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
@@ -30,12 +33,6 @@ public class ProjectService {
 
         project.setOwner(employee);
         return projectRepository.save(project);
-    }
-
-    @Transactional
-    public void deleteProject(Long projectId) {
-        Project project = getProjectById(projectId);
-        projectRepository.delete(project);
     }
 
     public List<Project> getAllProjects() {

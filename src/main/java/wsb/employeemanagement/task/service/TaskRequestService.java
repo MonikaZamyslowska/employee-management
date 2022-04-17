@@ -9,7 +9,6 @@ import wsb.employeemanagement.exception.NotEnoughCapacityException;
 import wsb.employeemanagement.task.domain.Task;
 import wsb.employeemanagement.task.domain.TaskRequest;
 import wsb.employeemanagement.task.domain.TaskRequestStatus;
-import wsb.employeemanagement.task.domain.TaskStatus;
 import wsb.employeemanagement.task.repository.TaskRepository;
 import wsb.employeemanagement.task.repository.TaskRequestRepository;
 

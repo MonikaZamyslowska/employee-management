@@ -47,10 +47,4 @@ public class ProjectController {
     public ProjectDto updateProject(@RequestBody final ProjectDto projectDto) {
         return projectMapper.mapProjectToDto(projectService.saveProject(projectMapper.mapDtoToProject(projectDto)));
     }
-
-    @DeleteMapping("{projectId}")
-    @RolesAllowed({"ROLE_ADMIN"})
-    public void deleteProject(@PathVariable long projectId) {
-        projectService.deleteProject(projectId);
-    }
 }

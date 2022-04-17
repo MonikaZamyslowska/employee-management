@@ -47,14 +47,12 @@
     </tr>
     </tbody>
     <div class="leftContainer">
-        <a class="btn btn-large btn-primary" href="/projects" th:href="@{/projects}">PROJEKTY</a>
+        <a class="btn btn-large btn-primary" th:href="@{/allProjects}">PROJEKTY</a>
     </div>
-    <div class="leftContainer" sec:authorize="hasAuthority('ROLE_ADMIN')">
+    </div>
+    <div sec:authorize="hasAuthority('ROLE_ADMIN')">
         <a th:href="@{/allEmployees}" class="btn btn-large btn-primary">UŻYTKOWNICY</a>
     </div>
-    <!--        <div class="rightContainer" sec:authorize="hasAuthority('ROLE_ADMIN')">-->
-    <!--            <a th:href="@{/addEmployeeForm}" class="btn btn-large btn-primary">DODAJ UŻYTKOWNIKA</a>-->
-    <!--        </div>-->
 </table>
 </body>
 </html>

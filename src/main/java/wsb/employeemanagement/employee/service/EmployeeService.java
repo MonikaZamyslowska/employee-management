@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wsb.employeemanagement.employee.domain.Employee;
+import wsb.employeemanagement.employee.domain.Role;
 import wsb.employeemanagement.employee.keycloak.KeycloakException;
 import wsb.employeemanagement.employee.keycloak.KeycloakService;
 import wsb.employeemanagement.employee.repository.EmployeeRepository;
@@ -48,6 +49,10 @@ public class EmployeeService {
 
     public Employee getEmployeeById(long employeeId) {
         return employeeRepository.findById(employeeId);
+    }
+
+    public List<Employee> getEmployeeByRole(Role role) {
+        return employeeRepository.findByRoles(role);
     }
 
     public Employee getEmployeeByUsername(String username) {
