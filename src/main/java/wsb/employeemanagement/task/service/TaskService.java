@@ -4,10 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wsb.employeemanagement.employee.domain.Employee;
-import wsb.employeemanagement.employee.domain.Role;
 import wsb.employeemanagement.exception.TaskNotFoundException;
-import wsb.employeemanagement.task.domain.Task;
 import wsb.employeemanagement.task.domain.OpenCloseStatus;
+import wsb.employeemanagement.task.domain.Task;
 import wsb.employeemanagement.task.repository.TaskRepository;
 
 import java.util.List;
@@ -41,10 +40,6 @@ public class TaskService {
 
     public List<Task> getAllByEmployee(Employee employee) {
         return taskRepository.findTasksByEmployee(employee);
-    }
-
-    public List<Task> getAllByRole(Role role) {
-        return taskRepository.findTasksByRole(role);
     }
 
     public List<Task> getAllByStatus(OpenCloseStatus openCloseStatus) {

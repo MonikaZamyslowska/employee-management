@@ -11,7 +11,6 @@
           crossorigin="anonymous" />
 </head>
 
-<body>
 
 <div class="container">
 
@@ -38,6 +37,35 @@
             <td th:text="${project.projectStatus}"/>
             <td>
                 <a th:href="@{'/updateProject/' + ${project.id}}" class="btn btn-info" sec:authorize="hasAuthority('ROLE_ADMIN')">Aktualizuj</a>
+                <a th:href="@{'/projectDetails/' + ${project.id}}" class="btn btn-info">Szczegóły</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div sec:authorize="hasAuthority('ROLE_PM')" class="container">
+    <br/><br/>
+    <h3>Lista projektów w których pełnisz rolę właściciela</h3>
+    <hr/>
+    <br/><br/>
+    <table class="table table-bordered table-striped" id="userProjectTable">
+        <thead>
+        <tr>
+            <th>Nazwa projektu</th>
+            <th>Opis</th>
+            <th>Właściciel projektu (osoba do kontaktu)</th>
+            <th>Status projektu</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="project: ${projectsPM}">
+            <td th:text="${project.name}" />
+            <td th:text="${project.description}" />
+            <td th:text="${project.owner.toString()}"/>
+            <td th:text="${project.projectStatus}"/>
+            <td>
                 <a th:href="@{'/projectDetails/' + ${project.id}}" class="btn btn-info">Szczegóły</a>
             </td>
         </tr>

@@ -47,7 +47,7 @@
     </tr>
     </tbody>
     <div class="leftContainer">
-        <a class="btn btn-large btn-primary" th:href="@{/allProjects}">PROJEKTY</a>
+        <a class="btn btn-large btn-primary" th:href="@{'/allProjects/' + ${employee.id}}">PROJEKTY</a>
     </div>
     </div>
     <div sec:authorize="hasAuthority('ROLE_ADMIN')">

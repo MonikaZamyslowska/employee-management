@@ -1,10 +1,13 @@
 package wsb.employeemanagement.task.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.domain.Grade;
-import wsb.employeemanagement.employee.domain.Role;
 import wsb.employeemanagement.project.domain.Project;
+import wsb.employeemanagement.skill.domain.Skill;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -29,10 +32,6 @@ public class Task {
     private Project project;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
-    private Role role;
-
-    @Enumerated(EnumType.STRING)
     @Column(name = "grade", nullable = false)
     private Grade grade;
 
@@ -46,4 +45,12 @@ public class Task {
 
     @OneToMany(mappedBy = "task", cascade = {CascadeType.ALL, CascadeType.REMOVE})
     private List<TaskRequest> taskRequests;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "task_skill",
+            joinColumns = {@JoinColumn(name = "task_id")},
+            inverseJoinColumns = {@JoinColumn(name = "skill_id")}
+    )
+    private List<Skill> preferredSkillList;
 }

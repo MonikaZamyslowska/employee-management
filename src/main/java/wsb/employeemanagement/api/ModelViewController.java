@@ -18,6 +18,7 @@ import wsb.employeemanagement.project.domain.Project;
 import wsb.employeemanagement.project.domain.dto.ProjectDto;
 import wsb.employeemanagement.project.service.ProjectService;
 import wsb.employeemanagement.task.domain.OpenCloseStatus;
+import wsb.employeemanagement.task.domain.Task;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.ServletException;
@@ -148,12 +149,15 @@ public class ModelViewController {
 
     // Projects
 
-    @GetMapping("/allProjects")
+    @GetMapping("/allProjects/{employeeId}")
     @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
-    public ModelAndView getProjects() {
+    public ModelAndView getProjects(@PathVariable long employeeId) {
         ModelAndView modelAndView = new ModelAndView("list-projects");
+        Employee employee = employeeService.getEmployeeById(employeeId);
         List<Project> projects = projectService.getAllProjects();
+        List<Project> userProjects = employee.getOwnerProject();
         modelAndView.addObject("projects", projects);
+        modelAndView.addObject("projectsPM", userProjects);
         return modelAndView;
     }
 
@@ -187,12 +191,22 @@ public class ModelViewController {
     @RolesAllowed({"ROLE_ADMIN"})
     public String createOrUpdateProject(Project project) {
         try {
-            System.out.println("kupa");
             projectService.saveProject(project);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             return "operation-failed";
         }
-        return "redirect:/allProjects";
+        return "redirect:/desktop";
+    }
+
+    @GetMapping("/projectDetails/{projectId}")
+    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
+    public ModelAndView getProjectsDetails(@PathVariable long projectId) {
+        ModelAndView modelAndView = new ModelAndView("project_details");
+        Project project = projectService.getProjectById(projectId);
+        List<Task> tasks = project.getTaskList();
+        modelAndView.addObject("project", project);
+        modelAndView.addObject("tasks", tasks);
+        return modelAndView;
     }
 }

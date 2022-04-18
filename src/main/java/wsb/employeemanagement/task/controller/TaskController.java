@@ -3,7 +3,6 @@ package wsb.employeemanagement.task.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import wsb.employeemanagement.employee.domain.Employee;
-import wsb.employeemanagement.employee.domain.Role;
 import wsb.employeemanagement.task.domain.OpenCloseStatus;
 import wsb.employeemanagement.task.domain.dto.TaskDto;
 import wsb.employeemanagement.task.mapper.TaskMapper;
@@ -67,11 +66,5 @@ public class TaskController {
     @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public List<TaskDto> getTasksByTaskStatus(@PathVariable OpenCloseStatus openCloseStatus) {
         return taskMapper.mapTaskListToDto(taskService.getAllByStatus(openCloseStatus));
-    }
-
-    @GetMapping("role/{role}")
-    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
-    public List<TaskDto> getTasksByTaskStatus(@PathVariable Role role) {
-        return taskMapper.mapTaskListToDto(taskService.getAllByRole(role));
     }
 }

@@ -84,9 +84,13 @@ public class Employee {
     )
     private List<TaskRequest> taskRequests;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
-    private Project ownerProject;
+    @OneToMany(
+            targetEntity = Project.class,
+            mappedBy = "owner",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private List<Project> ownerProject;
 
     @Override
     public String toString() {

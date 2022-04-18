@@ -28,8 +28,8 @@ public class Project {
     @Column(name = "project_status")
     private OpenCloseStatus projectStatus;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
     private Employee owner;
 
     @OneToMany(

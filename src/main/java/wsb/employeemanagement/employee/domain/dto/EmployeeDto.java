@@ -32,7 +32,7 @@ public class EmployeeDto {
     private List<Role> roles;
     private List<Task> tasks;
     private List<TaskRequest> taskRequests;
-    private Project ownerProject;
+    private List<Project> ownerProject;
 
 //    for tests only
     public EmployeeDto(Long id, String firstName) {

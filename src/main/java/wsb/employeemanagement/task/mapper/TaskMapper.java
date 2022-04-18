@@ -15,11 +15,11 @@ public class TaskMapper {
                 task.getId(),
                 task.getTaskStatus(),
                 task.getProject(),
-                task.getRole(),
                 task.getGrade(),
                 task.getCapacity(),
                 task.getEmployee(),
-                task.getTaskRequests()
+                task.getTaskRequests(),
+                task.getPreferredSkillList()
         );
     }
 
@@ -28,11 +28,11 @@ public class TaskMapper {
                 taskDto.getId(),
                 taskDto.getTaskStatus(),
                 taskDto.getProject(),
-                taskDto.getRole(),
                 taskDto.getGrade(),
                 taskDto.getCapacity(),
                 taskDto.getEmployee(),
-                taskDto.getTaskRequests()
+                taskDto.getTaskRequests(),
+                taskDto.getPreferredSkillList()
         );
     }
 
