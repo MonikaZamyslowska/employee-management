@@ -146,18 +146,6 @@ public class ModelViewController {
         return modelAndView;
     }
 
-    @GetMapping("/deleteEmployee/{employeeId}")
-    @RolesAllowed({"ROLE_ADMIN"})
-    public String deleteEmployee(@PathVariable long employeeId) {
-        try {
-            employeeService.deleteEmployee(employeeId);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-            return "operation-failed";
-        }
-        return "redirect:/allEmployees";
-    }
-
     @GetMapping("/allEmployees")
     @RolesAllowed({"ROLE_ADMIN"})
     public ModelAndView getEmployees() {
@@ -167,7 +155,7 @@ public class ModelViewController {
     }
 
     @GetMapping("/employeeDetails/{employeeId}")
-    @RolesAllowed({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_EMPLOYEE", "ROLE_PM"})
     public ModelAndView allEmployeeTaskModel(@PathVariable long employeeId) {
         ModelAndView modelAndView = new ModelAndView("employee-details");
         Employee employee = employeeService.getEmployeeById(employeeId);
@@ -249,6 +237,7 @@ public class ModelViewController {
                 .filter(task -> task.getTaskStatus().equals(OpenCloseStatus.OPEN))
                 .collect(Collectors.toList());
         modelAndView.addObject("openStatus", OpenCloseStatus.OPEN);
+        modelAndView.addObject("closeStatus", OpenCloseStatus.CLOSED);
         modelAndView.addObject("project", project);
         modelAndView.addObject("tasks", tasks);
         modelAndView.addObject("userTasks", userTasks);
@@ -296,6 +285,19 @@ public class ModelViewController {
     public String createOrUpdateTask(Task task) {
         try {
             taskService.saveTask(task);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return "operation-failed";
+        }
+        return "redirect:/projectDetails/" + task.getProject().getId();
+    }
+
+    @PostMapping("/reopenTask/{taskId}")
+    @RolesAllowed({"ROLE_ADMIN"})
+    public String saveSkillSet(@PathVariable long taskId) {
+        Task task = taskService.getTaskById(taskId);
+        try {
+            taskService.reopenTask(task);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             return "operation-failed";
@@ -401,6 +403,18 @@ public class ModelViewController {
         modelAndView.addObject("employee", employee);
         modelAndView.addObject("emptySkill", emptySkill);
         return modelAndView;
+    }
+
+    @PostMapping("/removeSkill/{skillId}/employee/{employeeId}")
+    @RolesAllowed({"ROLE_PM", "ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    public String removeEmployeeSkill(@PathVariable long employeeId, @PathVariable long skillId) {
+        try {
+            employeeService.removeSkillFromEmployeeList(employeeId, skillId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return "operation-failed";
+        }
+        return "redirect:/employeeDetails/" + employeeId;
     }
 
     @PostMapping("/saveEmployeeSkill/{employeeId}")

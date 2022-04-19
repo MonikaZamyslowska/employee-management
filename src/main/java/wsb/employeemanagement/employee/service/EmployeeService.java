@@ -9,8 +9,8 @@ import wsb.employeemanagement.employee.keycloak.KeycloakException;
 import wsb.employeemanagement.employee.keycloak.KeycloakService;
 import wsb.employeemanagement.employee.repository.EmployeeRepository;
 import wsb.employeemanagement.exception.EmployeeAlreadyExistsException;
-import wsb.employeemanagement.exception.EmployeeNotFoundException;
 import wsb.employeemanagement.skill.domain.Skill;
+import wsb.employeemanagement.skill.repository.SkillRepository;
 
 import java.util.List;
 
@@ -18,11 +18,13 @@ import java.util.List;
 public class EmployeeService {
     private EmployeeRepository employeeRepository;
     private KeycloakService keycloakService;
+    private SkillRepository skillRepository;
 
     @Autowired
-    public EmployeeService(EmployeeRepository employeeRepository, KeycloakService keycloakService) {
+    public EmployeeService(EmployeeRepository employeeRepository, KeycloakService keycloakService, SkillRepository skillRepository) {
         this.employeeRepository = employeeRepository;
         this.keycloakService = keycloakService;
+        this.skillRepository = skillRepository;
     }
 
     @Transactional
@@ -72,10 +74,19 @@ public class EmployeeService {
     @Transactional
     public void deleteEmployee(long employeeId) {
         Employee employee = employeeRepository.findById(employeeId);
-        employeeRepository.removeById(employeeId);
         if (!keycloakService.deleteUser(employee)) {
             throw new KeycloakException("Could not update user in keycloack");
         }
+    }
+
+
+    @Transactional
+    public Employee removeSkillFromEmployeeList(long employeeId, long skillId) {
+        Employee employee = employeeRepository.findById(employeeId);
+        Skill skill = skillRepository.getById(skillId);
+        List<Skill> employeeSkills = employee.getSkillList();
+        employeeSkills.remove(skill);
+        return employeeRepository.save(employee);
     }
 
     private void verifyEmployeeDoesNotExist(String username) {

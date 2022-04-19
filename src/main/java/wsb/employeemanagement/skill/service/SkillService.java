@@ -3,6 +3,8 @@ package wsb.employeemanagement.skill.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wsb.employeemanagement.employee.domain.Employee;
+import wsb.employeemanagement.employee.repository.EmployeeRepository;
 import wsb.employeemanagement.exception.SkillNotFoundException;
 import wsb.employeemanagement.skill.domain.Skill;
 import wsb.employeemanagement.skill.domain.SkillLevel;

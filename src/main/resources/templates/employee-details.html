@@ -28,11 +28,6 @@
             <td th:text="${task.project.name}"/>
             <td th:text="${task.toString()}"/>
             <td th:text="${task.capacity}"/>
-            <!--            <td>-->
-            <!--                <form sec:authorize="hasAuthority('ROLE_ADMIN')" th:action="@{'/task/remove/' + ${taskRequest.id}}" method="post" >-->
-            <!--                    <button class="btn btn-primary" type="submit">Anuluj zadanie</button>-->
-            <!--                </form>-->
-            <!--            </td>-->
         </tr>
         </tbody>
     </table>
@@ -60,7 +55,7 @@
             <td th:text="${skill.skillCategory}"/>
             <td th:text="${skill.skillLevel}"/>
             <td>
-                <form th:action="@{'/skill/removeFromList/' + ${skill.id}}"
+                <form th:action="@{'/removeSkill/' + ${skill.id} + '/employee/' + ${employee.id}}"
                       method="post">
                     <button class="btn btn-primary" type="submit">Usuń umiejętność</button>
                 </form>

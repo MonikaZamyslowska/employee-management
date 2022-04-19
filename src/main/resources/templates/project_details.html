@@ -48,12 +48,18 @@
         <tr>
             <th>Status zadania</th>
             <th>Preferowane umiejętności</th>
+            <th>Pracownik</th>
+            <th>Dostępność</th>
+
         </tr>
         </thead>
         <tbody>
         <tr th:each="task: ${tasks}">
             <td th:text="${task.taskStatus}"/>
             <td th:text="${task.preferredSkillList}"/>
+            <td th:if="${task.employee != null}" th:text="${task.employee.toString()}"/>
+            <td th:if="${task.employee == null}" th:text="'N/A'"/>
+            <td th:text="${task.capacity}"/>
             <td>
                 <a th:if="${(project.projectStatus == openStatus) and isEmployeePM}"
                    sec:authorize="hasAuthority('ROLE_PM')"
@@ -61,6 +67,10 @@
                    class="btn btn-info">Zmień status</a>
                 <a th:if="${isEmployeePM}" sec:authorize="hasAuthority('ROLE_PM')"
                    th:href="@{'/taskRequests/' + ${task.id}}" class="btn btn-info">Wnioski</a>
+                <form th:if="${(task.taskStatus == closeStatus) and (project.projectStatus == openStatus)}" sec:authorize="hasAuthority('ROLE_ADMIN')" th:action="@{'/reopenTask/' + ${task.id}}"
+                      method="post">
+                    <button class="btn btn-primary" type="submit">Otwórz ponownie</button>
+                </form>
             </td>
         </tr>
         </tbody>
@@ -81,11 +91,10 @@
             <td th:text="${task.preferredSkillList}"/>
             <td th:text="${task.capacity}"/>
             <td>
-                <form th:if="${project.projectStatus == openStatus}" th:action="@{'/createRequest/' + ${task.id}}"
+                <form th:if="${task.taskStatus == openStatus}" th:action="@{'/createRequest/' + ${task.id}}"
                       method="post">
                     <button class="btn btn-primary" type="submit">Dołącz</button>
                 </form>
-                <!--                <a th:if="${project.projectStatus == openStatus}" sec:authorize="hasAuthority('ROLE_EMPLOYEE')" th:method="POST" th:href="@{'/createRequest/' + ${task.id}}" class="btn btn-info">Dołącz</a>-->
             </td>
         </tr>
         </tbody>

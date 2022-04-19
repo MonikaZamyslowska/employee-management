@@ -32,7 +32,7 @@ public class Skill {
 
     @Override
     public String toString() {
-        return skillName + ", " + skillLevel;
+        return skillName + ", " + skillLevel + '\n';
     }
 
     public Skill(String skillName, SkillCategory skillCategory, SkillLevel skillLevel) {

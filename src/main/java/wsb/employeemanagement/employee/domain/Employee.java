@@ -45,7 +45,7 @@ public class Employee {
     @Column(name = "capacity")
     private Integer capacity;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.ALL, CascadeType.REMOVE})
     @JoinTable(
             name = "employee_skill",
             joinColumns = {@JoinColumn(name = "employee_id")},
@@ -66,7 +66,7 @@ public class Employee {
     @OneToMany(
             targetEntity = Task.class,
             mappedBy = "employee",
-            cascade = CascadeType.ALL,
+            cascade = {CascadeType.ALL, CascadeType.REMOVE},
             fetch = FetchType.LAZY
     )
     private List<Task> tasks;
@@ -75,7 +75,7 @@ public class Employee {
     @OneToMany(
             targetEntity = TaskRequest.class,
             mappedBy = "employee",
-            cascade = CascadeType.ALL,
+            cascade = {CascadeType.ALL, CascadeType.REMOVE},
             fetch = FetchType.LAZY
     )
     private List<TaskRequest> taskRequests;

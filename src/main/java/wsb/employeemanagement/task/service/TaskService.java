@@ -18,8 +18,9 @@ public class TaskService {
     private EmployeeRepository employeeRepository;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository) {
+    public TaskService(TaskRepository taskRepository, EmployeeRepository employeeRepository) {
         this.taskRepository = taskRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     @Transactional
