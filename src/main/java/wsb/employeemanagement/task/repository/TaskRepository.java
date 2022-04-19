@@ -2,6 +2,7 @@ package wsb.employeemanagement.task.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import wsb.employeemanagement.employee.domain.Employee;
+import wsb.employeemanagement.project.domain.Project;
 import wsb.employeemanagement.task.domain.OpenCloseStatus;
 import wsb.employeemanagement.task.domain.Task;
 
@@ -14,5 +15,5 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findTasksByTaskStatus(OpenCloseStatus openCloseStatus);
 
-    List<Task> findTasksByProject(long projectId);
+    List<Task> findTasksByProject(Project project);
 }

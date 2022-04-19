@@ -62,12 +62,6 @@ public class EmployeeController {
         return employeeMapper.mapEmployeeToDto(employeeService.getEmployeeByUsername(username));
     }
 
-    @GetMapping("/supervisor/{supervisorId}")
-    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
-    public List<EmployeeDto> getEmployeesBySupervisorId(@PathVariable long supervisorId) {
-        return employeeMapper.mapEmployeeListToDto(employeeService.getEmployeeBySupervisor(supervisorId));
-    }
-
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})

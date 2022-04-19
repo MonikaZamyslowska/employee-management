@@ -43,6 +43,7 @@
         <td th:text="${employee.email}"/>
         <td>
             <a th:href="@{'/keycloak/updatePassword/' + ${employee.id}}" class="btn btn-info">Aktualizuj hasło</a>
+            <a th:href="@{'/employeeDetails/' + ${employee.id}}" class="btn btn-info">Szegóły profilu</a>
         </td>
     </tr>
     </tbody>

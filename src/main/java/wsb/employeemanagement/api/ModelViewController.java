@@ -18,6 +18,7 @@ import wsb.employeemanagement.project.domain.Project;
 import wsb.employeemanagement.project.domain.dto.ProjectDto;
 import wsb.employeemanagement.project.service.ProjectService;
 import wsb.employeemanagement.skill.domain.Skill;
+import wsb.employeemanagement.skill.domain.dto.SkillDto;
 import wsb.employeemanagement.skill.service.SkillService;
 import wsb.employeemanagement.task.domain.OpenCloseStatus;
 import wsb.employeemanagement.task.domain.Task;
@@ -161,6 +162,26 @@ public class ModelViewController {
     public ModelAndView getEmployees() {
         ModelAndView modelAndView = new ModelAndView("list-employees");
         modelAndView.addObject("employees", employeeService.getAllEmployees());
+        return modelAndView;
+    }
+
+    @GetMapping("/employeeDetails/{employeeId}")
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    public ModelAndView allEmployeeTaskModel(@PathVariable long employeeId) {
+        ModelAndView modelAndView = new ModelAndView("employee-details");
+        Employee employee = employeeService.getEmployeeById(employeeId);
+//        boolean hasAuthorization = false;
+//
+//        if (principal.getName().equals(employee.getUsername()) || employee.getRoles().contains(Role.ADMIN)) {
+//            hasAuthorization = true;
+//        }
+
+        List<Task> tasks = taskService.getAllByEmployee(employee);
+        modelAndView.addObject("tasks", tasks);
+        modelAndView.addObject("employee", employee);
+        modelAndView.addObject("skills", employee.getSkillList());
+//        modelAndView.addObject("hasAuthorization", hasAuthorization);
+
         return modelAndView;
     }
 
@@ -369,5 +390,33 @@ public class ModelViewController {
             return "operation-failed";
         }
         return "redirect:/taskRequests/" + taskRequest.getTask().getId();
+    }
+
+    //    skills
+    @GetMapping("/addSkill/employee/{employeeId}")
+    @RolesAllowed({"ROLE_PM", "ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    public ModelAndView addEmployeeSkillModel(@PathVariable long employeeId) {
+        ModelAndView modelAndView = new ModelAndView("add-employee-skill");
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        List<Skill> skills = skillService.getAllSkills();
+        SkillDto emptySkill = new SkillDto();
+        skills.removeAll(employee.getSkillList());
+        modelAndView.addObject("skills", skills);
+        modelAndView.addObject("employee", employee);
+        modelAndView.addObject("emptySkill", emptySkill);
+        return modelAndView;
+    }
+
+    @PostMapping("/saveEmployeeSkill/{employeeId}")
+    @RolesAllowed({"ROLE_PM", "ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    public String saveEmployeeSkill(@PathVariable long employeeId, Skill skill) {
+        try {
+            Skill newSkill = skillService.getSkillById(skill.getId());
+            employeeService.updateEmployeeSkills(employeeId, newSkill);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return "operation-failed";
+        }
+        return "redirect:/desktop";
     }
 }

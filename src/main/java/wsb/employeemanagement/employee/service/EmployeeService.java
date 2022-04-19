@@ -10,6 +10,7 @@ import wsb.employeemanagement.employee.keycloak.KeycloakService;
 import wsb.employeemanagement.employee.repository.EmployeeRepository;
 import wsb.employeemanagement.exception.EmployeeAlreadyExistsException;
 import wsb.employeemanagement.exception.EmployeeNotFoundException;
+import wsb.employeemanagement.skill.domain.Skill;
 
 import java.util.List;
 
@@ -43,6 +44,15 @@ public class EmployeeService {
         return employeeRepository.save(employee);
     }
 
+    @Transactional
+    public Employee updateEmployeeSkills(long employeeId, Skill skill) {
+        Employee employee = employeeRepository.findById(employeeId);
+        List<Skill> employeeSkills = employee.getSkillList();
+        employeeSkills.add(skill);
+        employee.setSkillList(employeeSkills);
+        return employeeRepository.save(employee);
+    }
+
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
     }
@@ -57,11 +67,6 @@ public class EmployeeService {
 
     public Employee getEmployeeByUsername(String username) {
         return employeeRepository.findEmployeeByUsername(username);
-    }
-
-    public List<Employee> getEmployeeBySupervisor(long employeeId) {
-        Employee employee = getEmployeeById(employeeId);
-        return employeeRepository.findBySupervisor(employee);
     }
 
     @Transactional

@@ -45,10 +45,6 @@ public class Employee {
     @Column(name = "capacity")
     private Integer capacity;
 
-    @ManyToOne
-    @JoinColumn(name = "supervisor_id")
-    private Employee supervisor;
-
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "employee_skill",

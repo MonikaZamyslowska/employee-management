@@ -43,7 +43,7 @@ public class ProjectService {
     public Project closeProject(Project project) {
         Employee employee = employeeRepository.findEmployeeByUsername(project.getOwner().getUsername());
         project.setOwner(employee);
-        List<Task> taskList = taskRepository.findTasksByProject(project.getId());
+        List<Task> taskList = taskRepository.findTasksByProject(project);
         for (Task task : taskList) {
             List<TaskRequest> taskRequests = task.getTaskRequests();
             task.setTaskStatus(OpenCloseStatus.CLOSED);

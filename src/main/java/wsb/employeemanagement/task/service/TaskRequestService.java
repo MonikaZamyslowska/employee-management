@@ -81,6 +81,7 @@ public class TaskRequestService {
     }
 
     public TaskRequest rejectTaskRequest(TaskRequest taskRequest) {
+        Task task = taskRequest.getTask();
         taskRequest.setTaskRequestStatus(TaskRequestStatus.REJECTED);
         return taskRequestRepository.save(taskRequest);
     }

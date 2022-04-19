@@ -27,7 +27,6 @@ public class EmployeeDto {
     private String password;
     private Grade grade;
     private Integer capacity;
-    private Employee supervisor;
     private List<Skill> skillList;
     private List<Role> roles;
     private List<Task> tasks;
