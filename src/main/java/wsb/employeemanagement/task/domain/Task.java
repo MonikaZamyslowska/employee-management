@@ -35,7 +35,6 @@ public class Task {
     @Column(name = "grade", nullable = false)
     private Grade grade;
 
-    @Size(max = 100)
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
 

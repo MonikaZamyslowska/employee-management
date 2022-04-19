@@ -39,4 +39,14 @@ public class Project {
             fetch = FetchType.LAZY
     )
     private List<Task> taskList;
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", projectStatus=" + projectStatus +
+                ", owner=" + owner +
+                '}';
+    }
 }

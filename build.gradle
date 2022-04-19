@@ -43,6 +43,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+	implementation 'org.webjars:bootstrap:4.0.0-2'
+	implementation 'org.webjars:webjars-locator:0.32'
 }
 
 tasks.named('test') {

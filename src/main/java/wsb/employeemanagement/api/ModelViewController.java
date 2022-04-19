@@ -17,8 +17,12 @@ import wsb.employeemanagement.exception.EmployeeNotFoundException;
 import wsb.employeemanagement.project.domain.Project;
 import wsb.employeemanagement.project.domain.dto.ProjectDto;
 import wsb.employeemanagement.project.service.ProjectService;
+import wsb.employeemanagement.skill.domain.Skill;
+import wsb.employeemanagement.skill.service.SkillService;
 import wsb.employeemanagement.task.domain.OpenCloseStatus;
 import wsb.employeemanagement.task.domain.Task;
+import wsb.employeemanagement.task.domain.dto.TaskDto;
+import wsb.employeemanagement.task.service.TaskService;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.ServletException;
@@ -26,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class ModelViewController {
@@ -33,11 +38,15 @@ public class ModelViewController {
 
     private final EmployeeService employeeService;
     private ProjectService projectService;
+    private SkillService skillService;
+    private TaskService taskService;
 
     @Autowired
-    public ModelViewController(EmployeeService employeeService, ProjectService projectService) {
+    public ModelViewController(EmployeeService employeeService, ProjectService projectService, SkillService skillService, TaskService taskService) {
         this.employeeService = employeeService;
         this.projectService = projectService;
+        this.skillService = skillService;
+        this.taskService = taskService;
     }
 
     //login and logout view
@@ -205,8 +214,63 @@ public class ModelViewController {
         ModelAndView modelAndView = new ModelAndView("project_details");
         Project project = projectService.getProjectById(projectId);
         List<Task> tasks = project.getTaskList();
+        List<Task> userTasks = tasks.stream()
+                .filter(task -> task.getTaskStatus().equals(OpenCloseStatus.OPEN))
+                .collect(Collectors.toList());
+        modelAndView.addObject("openStatus", OpenCloseStatus.OPEN);
         modelAndView.addObject("project", project);
         modelAndView.addObject("tasks", tasks);
+        modelAndView.addObject("userTasks", userTasks);
         return modelAndView;
     }
+
+    // task
+
+    @GetMapping("/addTask/{projectId}")
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_PM"})
+    public ModelAndView addTaskModel(@PathVariable long projectId) {
+        ModelAndView modelAndView = new ModelAndView("add-task");
+        TaskDto taskDto = new TaskDto();
+        Project project = projectService.getProjectById(projectId);
+        List<OpenCloseStatus> openCloseStatuses = Arrays.asList(OpenCloseStatus.values().clone());
+        List<Skill> preferredSkills = skillService.getAllSkills();
+        List<Grade> grades = Arrays.asList(Grade.values().clone());
+        modelAndView.addObject("task", taskDto);
+        modelAndView.addObject("preferredSkills", preferredSkills);
+        modelAndView.addObject("statuses", openCloseStatuses);
+        modelAndView.addObject("grades", grades);
+        modelAndView.addObject("project", project);
+        return modelAndView;
+    }
+
+    @GetMapping("/updateTask/{projectId}/{taskId}")
+    @RolesAllowed({"ROLE_ADMIN"})
+    public ModelAndView updateTaskModel(@PathVariable long projectId, @PathVariable long taskId) {
+        ModelAndView modelAndView = new ModelAndView("update-task");
+        Task task = taskService.getTaskById(taskId);
+        Project project = projectService.getProjectById(projectId);
+        List<OpenCloseStatus> openCloseStatuses = Arrays.asList(OpenCloseStatus.values().clone());
+        modelAndView.addObject("task", task);
+        modelAndView.addObject("statuses", openCloseStatuses);
+        modelAndView.addObject("project", project);
+        modelAndView.addObject("preferredSkills", task.getPreferredSkillList());
+        modelAndView.addObject("grade", task.getGrade());
+        return modelAndView;
+    }
+
+    @PostMapping("/saveTask")
+    @RolesAllowed({"ROLE_PM", "ROLE_ADMIN"})
+    public String createOrUpdateTask(Task task) {
+        try {
+            taskService.saveTask(task);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return "operation-failed";
+        }
+        return "redirect:/desktop";
+    }
+
+    //TaskRequest
+
+
 }
