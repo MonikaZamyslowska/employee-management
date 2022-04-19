@@ -21,7 +21,10 @@ import wsb.employeemanagement.skill.domain.Skill;
 import wsb.employeemanagement.skill.service.SkillService;
 import wsb.employeemanagement.task.domain.OpenCloseStatus;
 import wsb.employeemanagement.task.domain.Task;
+import wsb.employeemanagement.task.domain.TaskRequest;
+import wsb.employeemanagement.task.domain.TaskRequestStatus;
 import wsb.employeemanagement.task.domain.dto.TaskDto;
+import wsb.employeemanagement.task.service.TaskRequestService;
 import wsb.employeemanagement.task.service.TaskService;
 
 import javax.annotation.security.RolesAllowed;
@@ -40,13 +43,18 @@ public class ModelViewController {
     private ProjectService projectService;
     private SkillService skillService;
     private TaskService taskService;
+    private TaskRequestService taskRequestService;
 
     @Autowired
-    public ModelViewController(EmployeeService employeeService, ProjectService projectService, SkillService skillService, TaskService taskService) {
+    public ModelViewController(EmployeeService employeeService,
+                               ProjectService projectService,
+                               SkillService skillService, TaskService taskService,
+                               TaskRequestService taskRequestService) {
         this.employeeService = employeeService;
         this.projectService = projectService;
         this.skillService = skillService;
         this.taskService = taskService;
+        this.taskRequestService = taskRequestService;
     }
 
     //login and logout view
@@ -200,7 +208,11 @@ public class ModelViewController {
     @RolesAllowed({"ROLE_ADMIN"})
     public String createOrUpdateProject(Project project) {
         try {
-            projectService.saveProject(project);
+            if (project.getProjectStatus().equals(OpenCloseStatus.CLOSED)) {
+                projectService.closeProject(project);
+            } else {
+                projectService.saveProject(project);
+            }
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             return "operation-failed";
@@ -210,9 +222,11 @@ public class ModelViewController {
 
     @GetMapping("/projectDetails/{projectId}")
     @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
-    public ModelAndView getProjectsDetails(@PathVariable long projectId) {
+    public ModelAndView getProjectsDetails(@PathVariable long projectId, Principal principal) {
         ModelAndView modelAndView = new ModelAndView("project_details");
+        Employee employee = employeeService.getEmployeeByUsername(principal.getName());
         Project project = projectService.getProjectById(projectId);
+        boolean isEmployeePM = project.getOwner().equals(employee);
         List<Task> tasks = project.getTaskList();
         List<Task> userTasks = tasks.stream()
                 .filter(task -> task.getTaskStatus().equals(OpenCloseStatus.OPEN))
@@ -221,6 +235,7 @@ public class ModelViewController {
         modelAndView.addObject("project", project);
         modelAndView.addObject("tasks", tasks);
         modelAndView.addObject("userTasks", userTasks);
+        modelAndView.addObject("isEmployeePM", isEmployeePM);
         return modelAndView;
     }
 
@@ -232,6 +247,7 @@ public class ModelViewController {
         ModelAndView modelAndView = new ModelAndView("add-task");
         TaskDto taskDto = new TaskDto();
         Project project = projectService.getProjectById(projectId);
+        taskDto.setProject(project);
         List<OpenCloseStatus> openCloseStatuses = Arrays.asList(OpenCloseStatus.values().clone());
         List<Skill> preferredSkills = skillService.getAllSkills();
         List<Grade> grades = Arrays.asList(Grade.values().clone());
@@ -273,4 +289,85 @@ public class ModelViewController {
     //TaskRequest
 
 
+    @PostMapping("/createRequest/{taskId}")
+    @RolesAllowed({"ROLE_PM", "ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    public String createTaskRequest(@PathVariable long taskId, Principal principal) {
+        try {
+            Employee employee = employeeService.getEmployeeByUsername(principal.getName());
+            Task task = taskService.getTaskById(taskId);
+            TaskRequest taskRequest = new TaskRequest();
+            taskRequest.setTask(task);
+            taskRequest.setEmployee(employee);
+            taskRequestService.createNewTaskRequest(taskRequest);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return "operation-failed";
+        }
+        return "redirect:/desktop";
+    }
+
+    @GetMapping("/taskRequests/{taskId}")
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_PM"})
+    public ModelAndView allTaskRequestsModel(@PathVariable long taskId, Principal principal) {
+        ModelAndView modelAndView = new ModelAndView("list-task-requests");
+        Employee employee = employeeService.getEmployeeByUsername(principal.getName());
+        Task task = taskService.getTaskById(taskId);
+        boolean isEmployeeOwner = task.getProject().getOwner().equals(employee);
+        List<TaskRequest> taskRequests = taskRequestService.getAllTaskRequestByTask(task);
+        modelAndView.addObject("task", task);
+        modelAndView.addObject("taskRequests", taskRequests);
+        modelAndView.addObject("isEmployeeOwner", isEmployeeOwner);
+        modelAndView.addObject("waitingStatus", TaskRequestStatus.WAITING_FOR_APPROVE);
+        return modelAndView;
+    }
+
+    @GetMapping("/taskRequests/employee/{employeeId}")
+    @RolesAllowed({"ROLE_EMPLOYEE"})
+    public ModelAndView allEmployeeRequestsModel(@PathVariable long employeeId) {
+        ModelAndView modelAndView = new ModelAndView("list-task-requests-employee");
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        List<TaskRequest> taskRequestsByUser = taskRequestService.getAllTaskRequestByEmployee(employee);
+        modelAndView.addObject("taskRequestsUser", taskRequestsByUser);
+        modelAndView.addObject("waitingStatus", TaskRequestStatus.WAITING_FOR_APPROVE);
+        return modelAndView;
+    }
+
+    @PostMapping("/rejectTaskRequest/{taskRequestId}")
+    @RolesAllowed({"ROLE_PM", "ROLE_ADMIN"})
+    public String rejectTaskRequest(@PathVariable long taskRequestId) {
+        TaskRequest taskRequest = taskRequestService.getById(taskRequestId);
+        try {
+            taskRequestService.rejectTaskRequest(taskRequest);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return "operation-failed";
+        }
+        return "redirect:/taskRequests/" + taskRequest.getTask().getId();
+    }
+
+    @PostMapping("/rejectTaskRequest/employee/{taskRequestId}")
+    @RolesAllowed({"ROLE_EMPLOYEE"})
+    public String rejectTaskRequestByEmployee(@PathVariable long taskRequestId) {
+        TaskRequest taskRequest = taskRequestService.getById(taskRequestId);
+        try {
+            taskRequestService.rejectTaskRequest(taskRequest);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return "operation-failed";
+        }
+        return "redirect:/taskRequests/employee/" + taskRequest.getEmployee().getId();
+    }
+
+    @PostMapping("/acceptTaskRequest/{taskRequestId}")
+    @RolesAllowed({"ROLE_PM", "ROLE_ADMIN"})
+    public String acceptTaskRequest(@PathVariable long taskRequestId) {
+        TaskRequest taskRequest = taskRequestService.getById(taskRequestId);
+        try {
+            taskRequestService.acceptTaskRequest(taskRequest);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return "operation-failed";
+        }
+        return "redirect:/taskRequests/" + taskRequest.getTask().getId();
+    }
 }

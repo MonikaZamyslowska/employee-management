@@ -12,7 +12,7 @@
 </head>
 
 
-<div class="container">
+<div class="container" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')">
 
     <h3>Lista projektów</h3>
 
@@ -42,6 +42,7 @@
         </tr>
         </tbody>
     </table>
+    <a th:href="@{/desktop}">Wróć do pulpitu</a>
 </div>
 
 
@@ -79,6 +80,16 @@
 <script>
     $(document).ready(function() {
         $("#projectTable").DataTable({
+            'aoColumnDefs': [{
+                'bSortable': false,
+                'aTargets': [-1] /* 1st one, start by the right */
+            }]
+        });
+    })
+</script>
+<script>
+    $(document).ready(function() {
+        $("#userProjectTable").DataTable({
             'aoColumnDefs': [{
                 'bSortable': false,
                 'aTargets': [-1] /* 1st one, start by the right */

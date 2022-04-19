@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.repository.EmployeeRepository;
 import wsb.employeemanagement.exception.NotEnoughCapacityException;
+import wsb.employeemanagement.exception.TaskNotFoundException;
 import wsb.employeemanagement.task.domain.Task;
 import wsb.employeemanagement.task.domain.TaskRequest;
 import wsb.employeemanagement.task.domain.TaskRequestStatus;
@@ -29,6 +30,14 @@ public class TaskRequestService {
 
     public List<TaskRequest> getAllTaskRequestByTask(Task task) {
         return taskRequestRepository.findTaskRequestsByTask(task);
+    }
+
+    public List<TaskRequest> getAllTaskRequestByEmployee(Employee employee) {
+        return taskRequestRepository.findTaskRequestsByEmployee(employee);
+    }
+
+    public TaskRequest getById(long id) {
+        return taskRequestRepository.getById(id);
     }
 
     @Transactional

@@ -8,32 +8,54 @@ import wsb.employeemanagement.employee.repository.EmployeeRepository;
 import wsb.employeemanagement.exception.ProjectNotFoundException;
 import wsb.employeemanagement.project.domain.Project;
 import wsb.employeemanagement.project.repository.ProjectRepository;
+import wsb.employeemanagement.task.domain.OpenCloseStatus;
 import wsb.employeemanagement.task.domain.Task;
 import wsb.employeemanagement.task.domain.TaskRequest;
+import wsb.employeemanagement.task.domain.TaskRequestStatus;
 import wsb.employeemanagement.task.repository.TaskRepository;
+import wsb.employeemanagement.task.repository.TaskRequestRepository;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
     private ProjectRepository projectRepository;
     private EmployeeRepository employeeRepository;
+    private TaskRepository taskRepository;
+    private TaskRequestRepository taskRequestRepository;
 
     @Autowired
-    public ProjectService(ProjectRepository projectRepository, EmployeeRepository employeeRepository) {
+    public ProjectService(ProjectRepository projectRepository, EmployeeRepository employeeRepository, TaskRepository taskRepository, TaskRequestRepository taskRequestRepository) {
         this.projectRepository = projectRepository;
         this.employeeRepository = employeeRepository;
+        this.taskRepository = taskRepository;
+        this.taskRequestRepository = taskRequestRepository;
     }
 
     @Transactional
     public Project saveProject(Project project) {
         Employee employee = employeeRepository.findEmployeeByUsername(project.getOwner().getUsername());
-
         project.setOwner(employee);
         return projectRepository.save(project);
     }
+
+    @Transactional
+    public Project closeProject(Project project) {
+        Employee employee = employeeRepository.findEmployeeByUsername(project.getOwner().getUsername());
+        project.setOwner(employee);
+        List<Task> taskList = taskRepository.findTasksByProject(project.getId());
+        for (Task task : taskList) {
+            List<TaskRequest> taskRequests = task.getTaskRequests();
+            task.setTaskStatus(OpenCloseStatus.CLOSED);
+            taskRepository.save(task);
+            for (TaskRequest taskRequest : taskRequests) {
+                taskRequest.setTaskRequestStatus(TaskRequestStatus.REJECTED);
+                taskRequestRepository.save(taskRequest);
+            }
+        }
+        return projectRepository.save(project);
+    }
+
 
     public List<Project> getAllProjects() {
         return projectRepository.findAll();

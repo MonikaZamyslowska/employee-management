@@ -12,6 +12,7 @@ import wsb.employeemanagement.skill.domain.Skill;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -52,4 +53,14 @@ public class Task {
             inverseJoinColumns = {@JoinColumn(name = "skill_id")}
     )
     private List<Skill> preferredSkillList;
+
+    @Override
+    public String toString() {
+        return "poziom: " + grade +
+                ", dostępność: " + capacity + "%" +
+                ", umiejętności: " +
+                preferredSkillList.stream()
+                        .map(skill -> skill.toString())
+                        .collect(Collectors.joining("|", "(", ")"));
+    }
 }

@@ -46,13 +46,14 @@
         </td>
     </tr>
     </tbody>
-    <div class="leftContainer">
-        <a class="btn btn-large btn-primary" th:href="@{'/allProjects/' + ${employee.id}}">PROJEKTY</a>
-    </div>
-    </div>
-    <div sec:authorize="hasAuthority('ROLE_ADMIN')">
-        <a th:href="@{/allEmployees}" class="btn btn-large btn-primary">UŻYTKOWNICY</a>
-    </div>
 </table>
+<div class="leftContainer">
+    <a class="btn btn-large btn-primary" th:href="@{'/allProjects/' + ${employee.id}}">PROJEKTY</a>
+    <a sec:authorize="hasAuthority('ROLE_EMPLOYEE')" th:href="@{'/taskRequests/employee/' + ${employee.id}}" class="btn btn-info">TWOJE WNIOSKI</a>
+</div>
+</div>
+<div class="rightContainer" sec:authorize="hasAuthority('ROLE_ADMIN')">
+    <a th:href="@{/allEmployees}" class="btn btn-large btn-primary">UŻYTKOWNICY</a>
+</div>
 </body>
 </html>
