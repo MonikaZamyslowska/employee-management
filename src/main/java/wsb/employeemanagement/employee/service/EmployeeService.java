@@ -72,11 +72,10 @@ public class EmployeeService {
     @Transactional
     public void deleteEmployee(long employeeId) {
         Employee employee = employeeRepository.findById(employeeId);
-
+        employeeRepository.removeById(employeeId);
         if (!keycloakService.deleteUser(employee)) {
             throw new KeycloakException("Could not update user in keycloack");
         }
-        employeeRepository.removeById(employeeId);
     }
 
     private void verifyEmployeeDoesNotExist(String username) {

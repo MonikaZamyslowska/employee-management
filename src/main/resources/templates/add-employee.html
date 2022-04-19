@@ -1,17 +1,13 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
-
 <head>
     <meta charset="utf-8">
-    <title>Dodaj/edytuj pracownika</title>
-    <link href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css"
-          rel="stylesheet"
-          type="text/css"/>
-    <link crossorigin="anonymous"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
-          rel="stylesheet"/>
+    <title>Spring Boot Thymeleaf Application - Employee Management</title>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 </head>
-
 <body>
 
 <div class="container">
@@ -21,7 +17,8 @@
 
     <form method="POST" th:action="@{/saveEmployee}" th:object="${employee}">
 
-        <input class="form-control col-4 mb-4" placeholder="Uzupełnij nazwę użytkownika" th:field="*{username}" type="text"/>
+        <input class="form-control col-4 mb-4" placeholder="Uzupełnij nazwę użytkownika" th:field="*{username}"
+               type="text"/>
         <input class="form-control col-4 mb-4" placeholder="Uzupełnij hasło" th:field="*{password}" type="text"/>
         <input class="form-control col-4 mb-4" placeholder="Uzupełnij imię" th:field="*{firstName}" type="text"/>
         <input class="form-control col-4 mb-4" placeholder="Uzupełnij nazwisko" th:field="*{lastName}" type="text"/>

@@ -55,7 +55,6 @@
     <a sec:authorize="hasAuthority('ROLE_EMPLOYEE')" th:href="@{'/taskRequests/employee/' + ${employee.id}}"
        class="btn btn-info">TWOJE WNIOSKI</a>
 </div>
-</div>
 <div class="container rightContainer" sec:authorize="hasAuthority('ROLE_ADMIN')">
     <a th:href="@{/allEmployees}" class="btn btn-info">UŻYTKOWNICY</a><br/>
     <a th:href="@{/allSkills}" class="btn btn-info">UMIEJĘTNOŚCI</a><br/>
