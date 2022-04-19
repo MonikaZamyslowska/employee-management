@@ -29,6 +29,7 @@ public class SkillService {
     public List<Skill> createSetSkill(Skill skill) {
         return Stream.of(SkillLevel.values())
                 .map(level -> new Skill(skill.getSkillName(), skill.getSkillCategory(), level))
+                .map(skill1 -> skillRepository.save(skill1))
                 .collect(Collectors.toList());
     }
 

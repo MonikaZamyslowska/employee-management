@@ -7,6 +7,7 @@ import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.repository.EmployeeRepository;
 import wsb.employeemanagement.exception.NotEnoughCapacityException;
 import wsb.employeemanagement.exception.TaskNotFoundException;
+import wsb.employeemanagement.task.domain.OpenCloseStatus;
 import wsb.employeemanagement.task.domain.Task;
 import wsb.employeemanagement.task.domain.TaskRequest;
 import wsb.employeemanagement.task.domain.TaskRequestStatus;
@@ -75,11 +76,13 @@ public class TaskRequestService {
                 });
 
         task.setEmployee(employee);
+        task.setTaskStatus(OpenCloseStatus.CLOSED);
         taskRepository.save(task);
 
         return taskRequest;
     }
 
+    @Transactional
     public TaskRequest rejectTaskRequest(TaskRequest taskRequest) {
         Task task = taskRequest.getTask();
         taskRequest.setTaskRequestStatus(TaskRequestStatus.REJECTED);

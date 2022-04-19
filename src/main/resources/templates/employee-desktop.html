@@ -1,60 +1,64 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
-    <title>Strona główna</title>
+    <title>Spring Boot Thymeleaf Application - Employee Management</title>
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css"/>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
-          crossorigin="anonymous"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
     <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div class="container text-center">
+<div class="container rightContainer">
     <form th:action="@{/logout}" method="post">
         <p>
             Witaj <b>[[${employee.username}]]</b>
         </p>
-        <input type="submit" value="Sign Out"/>
+        <input type="submit" value="Wyloguj"/>
     </form>
 </div>
-<div>
+<div class="container">
+    <br/><br/>
     <h1>Dane Twojego konta:</h1>
-</div>
-<br/><br/>
-<table class="table table-bordered table-striped" id="employeeTable">
+    <hr/>
+    <br/>
+    <table class="table table-bordered table-striped" id="employeeTable">
 
-    <thead>
-    <tr>
-        <th>Imię</th>
-        <th>Nazwisko</th>
-        <th>Nazwa użytkownika</th>
-        <th>E-mail</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td th:text="${employee.firstName}"/>
-        <td th:text="${employee.lastName}"/>
-        <td th:text="${employee.username}"/>
-        <td th:text="${employee.email}"/>
-        <td>
-            <a th:href="@{'/keycloak/updatePassword/' + ${employee.id}}" class="btn btn-info">Aktualizuj hasło</a>
-            <a th:href="@{'/employeeDetails/' + ${employee.id}}" class="btn btn-info">Szegóły profilu</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
-<div class="leftContainer">
-    <a class="btn btn-large btn-primary" th:href="@{'/allProjects/' + ${employee.id}}">PROJEKTY</a>
-    <a sec:authorize="hasAuthority('ROLE_EMPLOYEE')" th:href="@{'/taskRequests/employee/' + ${employee.id}}" class="btn btn-info">TWOJE WNIOSKI</a>
+        <thead>
+        <tr>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Nazwa użytkownika</th>
+            <th>E-mail</th>
+            <th>Pozostała dostępność</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${employee.firstName}"/>
+            <td th:text="${employee.lastName}"/>
+            <td th:text="${employee.username}"/>
+            <td th:text="${employee.email}"/>
+            <td th:text="${employee.capacity}"/>
+            <td>
+                <a th:href="@{'/keycloak/updatePassword/' + ${employee.id}}" class="btn btn-info">Aktualizuj hasło</a>
+                <a th:href="@{'/employeeDetails/' + ${employee.id}}" class="btn btn-info">Szegóły profilu</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="container leftContainer">
+    <a class="btn btn-info" th:href="@{'/allProjects/' + ${employee.id}}">PROJEKTY</a>
+    <a sec:authorize="hasAuthority('ROLE_EMPLOYEE')" th:href="@{'/taskRequests/employee/' + ${employee.id}}"
+       class="btn btn-info">TWOJE WNIOSKI</a>
 </div>
 </div>
-<div class="rightContainer" sec:authorize="hasAuthority('ROLE_ADMIN')">
-    <a th:href="@{/allEmployees}" class="btn btn-large btn-primary">UŻYTKOWNICY</a>
+<div class="container rightContainer" sec:authorize="hasAuthority('ROLE_ADMIN')">
+    <a th:href="@{/allEmployees}" class="btn btn-info">UŻYTKOWNICY</a><br/>
+    <a th:href="@{/allSkills}" class="btn btn-info">UMIEJĘTNOŚCI</a><br/>
 </div>
 </body>
 </html>

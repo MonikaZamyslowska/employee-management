@@ -30,8 +30,14 @@
             <option value="">Wybierz stopień zatrudnienia</option>
             <option th:each="grade : ${grades}" th:text="${grade}" th:value="${grade}"></option>
         </select>
-        <input class="form-control col-4 mb-4" placeholder="Uzupełnij dostępność, max 100%" th:field="*{capacity}"
-               th:max="100" th:min="0" type="number"/>
+        <div class="form-group">
+            <label for="percentage">Wymagana dostępność</label>
+            <select class="form-control" id="percentage" name="percentage" th:field="*{capacity}">
+                <option value="30">30</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
         <label class="form-control col-4 mb-4">Role:
             <input name="roles" th:each="role : ${roles}"
                    th:field="*{roles}"

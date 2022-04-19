@@ -1,24 +1,21 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8">
-    <title>Lista pracowników</title>
-    <link rel="stylesheet"
-          type="text/css"
-          href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css" />
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
-          crossorigin="anonymous" />
+    <title>Spring Boot Thymeleaf Application - Employee Management</title>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 </head>
-
-
+<body>
 <div class="container" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')">
-
+    <br/>
     <h3>Lista projektów</h3>
-
     <hr/>
-    <a  sec:authorize="hasAuthority('ROLE_ADMIN')" th:href="@{/addProject}" class="btn btn-primary">Dodaj projekt</a>
-    <br/><br/>
+    <br/>
+    <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:href="@{/addProject}" class="btn btn-primary">Dodaj projekt</a>
+    <br/>
     <table class="table table-bordered table-striped" id="projectTable">
 
         <thead>
@@ -31,12 +28,13 @@
         </thead>
         <tbody>
         <tr th:each="project: ${projects}">
-            <td th:text="${project.name}" />
-            <td th:text="${project.description}" />
+            <td th:text="${project.name}"/>
+            <td th:text="${project.description}"/>
             <td th:text="${project.owner.toString()}"/>
             <td th:text="${project.projectStatus}"/>
             <td>
-                <a th:href="@{'/updateProject/' + ${project.id}}" class="btn btn-info" sec:authorize="hasAuthority('ROLE_ADMIN')">Aktualizuj</a>
+                <a th:href="@{'/updateProject/' + ${project.id}}" class="btn btn-info"
+                   sec:authorize="hasAuthority('ROLE_ADMIN')">Aktualizuj</a>
                 <a th:href="@{'/projectDetails/' + ${project.id}}" class="btn btn-info">Szczegóły</a>
             </td>
         </tr>
@@ -45,12 +43,11 @@
     <a th:href="@{/desktop}">Wróć do pulpitu</a>
 </div>
 
-
 <div sec:authorize="hasAuthority('ROLE_PM')" class="container">
     <br/><br/>
     <h3>Lista projektów w których pełnisz rolę właściciela</h3>
     <hr/>
-    <br/><br/>
+    <br/>
     <table class="table table-bordered table-striped" id="userProjectTable">
         <thead>
         <tr>
@@ -62,8 +59,8 @@
         </thead>
         <tbody>
         <tr th:each="project: ${projectsPM}">
-            <td th:text="${project.name}" />
-            <td th:text="${project.description}" />
+            <td th:text="${project.name}"/>
+            <td th:text="${project.description}"/>
             <td th:text="${project.owner.toString()}"/>
             <td th:text="${project.projectStatus}"/>
             <td>
@@ -74,28 +71,5 @@
     </table>
     <a th:href="@{/desktop}">Wróć do pulpitu</a>
 </div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $("#projectTable").DataTable({
-            'aoColumnDefs': [{
-                'bSortable': false,
-                'aTargets': [-1] /* 1st one, start by the right */
-            }]
-        });
-    })
-</script>
-<script>
-    $(document).ready(function() {
-        $("#userProjectTable").DataTable({
-            'aoColumnDefs': [{
-                'bSortable': false,
-                'aTargets': [-1] /* 1st one, start by the right */
-            }]
-        });
-    })
-</script>
 </body>
 </html>

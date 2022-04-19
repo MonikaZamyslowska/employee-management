@@ -18,6 +18,7 @@ import wsb.employeemanagement.project.domain.Project;
 import wsb.employeemanagement.project.domain.dto.ProjectDto;
 import wsb.employeemanagement.project.service.ProjectService;
 import wsb.employeemanagement.skill.domain.Skill;
+import wsb.employeemanagement.skill.domain.SkillCategory;
 import wsb.employeemanagement.skill.domain.dto.SkillDto;
 import wsb.employeemanagement.skill.service.SkillService;
 import wsb.employeemanagement.task.domain.OpenCloseStatus;
@@ -170,17 +171,11 @@ public class ModelViewController {
     public ModelAndView allEmployeeTaskModel(@PathVariable long employeeId) {
         ModelAndView modelAndView = new ModelAndView("employee-details");
         Employee employee = employeeService.getEmployeeById(employeeId);
-//        boolean hasAuthorization = false;
-//
-//        if (principal.getName().equals(employee.getUsername()) || employee.getRoles().contains(Role.ADMIN)) {
-//            hasAuthorization = true;
-//        }
 
         List<Task> tasks = taskService.getAllByEmployee(employee);
         modelAndView.addObject("tasks", tasks);
         modelAndView.addObject("employee", employee);
         modelAndView.addObject("skills", employee.getSkillList());
-//        modelAndView.addObject("hasAuthorization", hasAuthorization);
 
         return modelAndView;
     }
@@ -227,7 +222,8 @@ public class ModelViewController {
 
     @PostMapping("/saveProject")
     @RolesAllowed({"ROLE_ADMIN"})
-    public String createOrUpdateProject(Project project) {
+    public String createOrUpdateProject(Project project, Principal principal) {
+        Employee employee = employeeService.getEmployeeByUsername(principal.getName());
         try {
             if (project.getProjectStatus().equals(OpenCloseStatus.CLOSED)) {
                 projectService.closeProject(project);
@@ -238,7 +234,7 @@ public class ModelViewController {
             LOGGER.error(e.getMessage());
             return "operation-failed";
         }
-        return "redirect:/desktop";
+        return "redirect:/allProjects/" + employee.getId();
     }
 
     @GetMapping("/projectDetails/{projectId}")
@@ -304,18 +300,17 @@ public class ModelViewController {
             LOGGER.error(e.getMessage());
             return "operation-failed";
         }
-        return "redirect:/desktop";
+        return "redirect:/projectDetails/" + task.getProject().getId();
     }
 
     //TaskRequest
 
-
     @PostMapping("/createRequest/{taskId}")
     @RolesAllowed({"ROLE_PM", "ROLE_ADMIN", "ROLE_EMPLOYEE"})
     public String createTaskRequest(@PathVariable long taskId, Principal principal) {
+        Employee employee = employeeService.getEmployeeByUsername(principal.getName());
+        Task task = taskService.getTaskById(taskId);
         try {
-            Employee employee = employeeService.getEmployeeByUsername(principal.getName());
-            Task task = taskService.getTaskById(taskId);
             TaskRequest taskRequest = new TaskRequest();
             taskRequest.setTask(task);
             taskRequest.setEmployee(employee);
@@ -324,7 +319,7 @@ public class ModelViewController {
             LOGGER.error(e.getMessage());
             return "operation-failed";
         }
-        return "redirect:/desktop";
+        return "redirect:/projectDetails/" + task.getProject().getId();
     }
 
     @GetMapping("/taskRequests/{taskId}")
@@ -393,6 +388,7 @@ public class ModelViewController {
     }
 
     //    skills
+
     @GetMapping("/addSkill/employee/{employeeId}")
     @RolesAllowed({"ROLE_PM", "ROLE_ADMIN", "ROLE_EMPLOYEE"})
     public ModelAndView addEmployeeSkillModel(@PathVariable long employeeId) {
@@ -417,6 +413,38 @@ public class ModelViewController {
             LOGGER.error(e.getMessage());
             return "operation-failed";
         }
-        return "redirect:/desktop";
+        return "redirect:/employeeDetails/" + employeeId;
+    }
+
+    @GetMapping("/addSkillSet")
+    @RolesAllowed({"ROLE_PM", "ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    public ModelAndView addSkillSet() {
+        ModelAndView modelAndView = new ModelAndView("add-skill-set");
+        List<SkillCategory> categories = Arrays.asList(SkillCategory.values());
+        SkillDto emptySkill = new SkillDto();
+        modelAndView.addObject("categories", categories);
+        modelAndView.addObject("skill", emptySkill);
+        return modelAndView;
+    }
+
+    @PostMapping("/saveSkillSet")
+    @RolesAllowed({"ROLE_ADMIN"})
+    public String saveSkillSet(Skill skill) {
+        try {
+            skillService.createSetSkill(skill);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return "operation-failed";
+        }
+        return "redirect:/allSkills";
+    }
+
+    @GetMapping("/allSkills")
+    @RolesAllowed({"ROLE_ADMIN"})
+    public ModelAndView skillList() {
+        ModelAndView modelAndView = new ModelAndView("list-skills");
+        List<Skill> skills = skillService.getAllSkills();
+        modelAndView.addObject("skills", skills);
+        return modelAndView;
     }
 }
