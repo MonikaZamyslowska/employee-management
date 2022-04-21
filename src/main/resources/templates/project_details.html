@@ -42,7 +42,7 @@
     <a th:if="${(project.projectStatus == openStatus) and isEmployeePM}" sec:authorize="hasAuthority('ROLE_PM')"
        th:href="@{'/addTask/' + ${project.id}}" class="btn btn-primary">Dodaj zadanie</a>
     <br/><br/>
-    <table class="table table-bordered table-striped" id="taskTable" sec:authorize="hasAuthority('ROLE_PM')">
+    <table class="table table-bordered table-striped" id="taskTable" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_PM')">
 
         <thead>
         <tr>

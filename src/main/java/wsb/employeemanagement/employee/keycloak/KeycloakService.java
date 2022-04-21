@@ -1,10 +1,7 @@
 package wsb.employeemanagement.employee.keycloak;
 
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
@@ -146,7 +143,7 @@ public class KeycloakService {
             RealmResource realmResource = keycloak.realm(realm);
             UsersResource usersResource = realmResource.users();
 
-            UserRepresentation user = findUserRepresentation(usersResource , employee.getUsername());
+            UserRepresentation user = findUserRepresentation(usersResource, employee.getUsername());
             UserResource userResource = usersResource.get(user.getId());
 
             userResource.remove();

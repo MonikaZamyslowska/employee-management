@@ -31,7 +31,7 @@
             <td>
                 <form th:if="${taskRequest.taskRequestStatus == waitingStatus}"
                       th:action="@{'/rejectTaskRequest/employee/' + ${taskRequest.id}}" method="post">
-                    <button class="btn btn-primary" type="submit">Odrzuć</button>
+                    <button class="btn btn-primary" type="submit">Anuluj prośbę</button>
                 </form>
             </td>
         </tr>

@@ -26,6 +26,8 @@
             <th>Nazwisko</th>
             <th>Nazwa użytkownika</th>
             <th>E-mail</th>
+            <th>Role</th>
+            <th>Stopień zatrudnienia</th>
         </tr>
         </thead>
         <tbody>
@@ -34,6 +36,8 @@
             <td th:text="${employee.lastName}"/>
             <td th:text="${employee.username}"/>
             <td th:text="${employee.email}"/>
+            <td th:text="${employee.roles}"/>
+            <td th:text="${employee.grade}"/>
             <td>
                 <a th:href="@{'/keycloak/updateEmployee/' + ${employee.id}}" class="btn btn-info">Aktualizuj</a>
             </td>

@@ -266,7 +266,7 @@ public class ModelViewController {
     }
 
     @GetMapping("/updateTask/{projectId}/{taskId}")
-    @RolesAllowed({"ROLE_ADMIN"})
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_PM"})
     public ModelAndView updateTaskModel(@PathVariable long projectId, @PathVariable long taskId) {
         ModelAndView modelAndView = new ModelAndView("update-task");
         Task task = taskService.getTaskById(taskId);
