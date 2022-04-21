@@ -30,6 +30,11 @@ public class Skill {
     @Column(name = "skill_level")
     private SkillLevel skillLevel;
 
+    @Override
+    public String toString() {
+        return skillName + ", " + skillLevel + '\n';
+    }
+
     public Skill(String skillName, SkillCategory skillCategory, SkillLevel skillLevel) {
         this.skillName = skillName;
         this.skillCategory = skillCategory;

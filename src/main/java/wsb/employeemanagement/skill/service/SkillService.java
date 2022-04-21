@@ -3,6 +3,8 @@ package wsb.employeemanagement.skill.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wsb.employeemanagement.employee.domain.Employee;
+import wsb.employeemanagement.employee.repository.EmployeeRepository;
 import wsb.employeemanagement.exception.SkillNotFoundException;
 import wsb.employeemanagement.skill.domain.Skill;
 import wsb.employeemanagement.skill.domain.SkillLevel;
@@ -29,6 +31,7 @@ public class SkillService {
     public List<Skill> createSetSkill(Skill skill) {
         return Stream.of(SkillLevel.values())
                 .map(level -> new Skill(skill.getSkillName(), skill.getSkillCategory(), level))
+                .map(skill1 -> skillRepository.save(skill1))
                 .collect(Collectors.toList());
     }
 

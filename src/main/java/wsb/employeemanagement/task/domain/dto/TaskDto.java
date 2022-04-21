@@ -1,12 +1,15 @@
 package wsb.employeemanagement.task.domain.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.domain.Grade;
-import wsb.employeemanagement.employee.domain.Role;
 import wsb.employeemanagement.project.domain.Project;
+import wsb.employeemanagement.skill.domain.Skill;
+import wsb.employeemanagement.task.domain.OpenCloseStatus;
 import wsb.employeemanagement.task.domain.TaskRequest;
-import wsb.employeemanagement.task.domain.TaskStatus;
 
 import java.util.List;
 
@@ -16,11 +19,11 @@ import java.util.List;
 @NoArgsConstructor
 public class TaskDto {
     private Long id;
-    private TaskStatus taskStatus;
+    private OpenCloseStatus taskStatus;
     private Project project;
-    private Role role;
     private Grade grade;
     private Integer capacity;
     private Employee employee;
     private List<TaskRequest> taskRequests;
+    private List<Skill> preferredSkillList;
 }

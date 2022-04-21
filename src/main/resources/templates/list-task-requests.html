@@ -1,0 +1,50 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>Spring Boot Thymeleaf Application - Employee Management</title>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:if="${isEmployeeOwner}" sec:authorize="hasAuthority('ROLE_PM')" class="container">
+
+    <h3>Lista wniosków o dołączenie do projektu</h3>
+
+    <table class="table table-bordered table-striped" id="taskRequestTable">
+        <thead>
+        <tr>
+            <th>Pracownik</th>
+            <th>Projekt</th>
+            <th>Zadanie</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="taskRequest: ${taskRequests}">
+            <td th:text="${taskRequest.employee.toString()}"/>
+            <td th:text="${taskRequest.task.project.name}"/>
+            <td th:text="${task.toString()}"/>
+            <td th:text="${taskRequest.taskRequestStatus}"/>
+            <td>
+                <form th:if="${taskRequest.taskRequestStatus == waitingStatus}"
+                      th:action="@{'/rejectTaskRequest/owner/' + ${taskRequest.id}}" method="post">
+                    <button class="btn btn-primary" type="submit">Odrzuć</button>
+                </form>
+                <form th:if="${taskRequest.taskRequestStatus == waitingStatus}"
+                      th:action="@{'/acceptTaskRequest/' + ${taskRequest.id}}" method="post">
+                    <button class="btn btn-primary" type="submit">Akceptuj</button>
+                </form>
+                <!--                <a th:if="${taskRequest.taskRequestStatus == waitingStatus}"-->
+                <!--                   th:href="@{'/rejectTaskRequest/' + ${taskRequest.id}}" class="btn btn-info" onClick="window.location.reload();">Odrzuć</a>-->
+                <!--                <a th:if="${taskRequest.taskRequestStatus == waitingStatus}" th:href="@{'/acceptTaskRequest/' + ${taskRequest.id}}" class="btn btn-info">Akceptuj</a>-->
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/desktop}">Wróć do pulpitu</a>
+</div>
+</body>
+</html>

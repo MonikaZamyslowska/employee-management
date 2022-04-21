@@ -3,7 +3,9 @@ package wsb.employeemanagement.employee.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.domain.dto.EmployeeDto;
 import wsb.employeemanagement.employee.mapper.EmployeeMapper;
 import wsb.employeemanagement.employee.service.EmployeeService;
@@ -58,12 +60,6 @@ public class EmployeeController {
     @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
     public EmployeeDto getEmployeeByUsername(@PathVariable @Username String username) {
         return employeeMapper.mapEmployeeToDto(employeeService.getEmployeeByUsername(username));
-    }
-
-    @GetMapping("/supervisor/{supervisorId}")
-    @RolesAllowed({"ROLE_EMPLOYEE", "ROLE_PM", "ROLE_ADMIN"})
-    public List<EmployeeDto> getEmployeesBySupervisorId(@PathVariable long supervisorId) {
-        return employeeMapper.mapEmployeeListToDto(employeeService.getEmployeeBySupervisor(supervisorId));
     }
 
     @PutMapping

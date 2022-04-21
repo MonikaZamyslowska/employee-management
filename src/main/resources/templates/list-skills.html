@@ -1,0 +1,39 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <title>Spring Boot Thymeleaf Application - Employee Management</title>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+
+    <h3>Lista umiejętności</h3>
+    <hr/>
+    </br>
+    <a th:href="@{/addSkillSet}" class="btn btn-large btn-primary">Dodaj zestaw umiejętności</a>
+    <br/><br/>
+
+    <table class="table table-bordered table-striped" id="skillsTable">
+        <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Kategoria</th>
+            <th>Poziom zaawansowania</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="skill: ${skills}">
+            <td th:text="${skill.skillName}"/>
+            <td th:text="${skill.skillCategory}"/>
+            <td th:text="${skill.skillLevel}"/>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/desktop}">Wróć do pulpitu</a>
+</div>
+</body>
+</html>

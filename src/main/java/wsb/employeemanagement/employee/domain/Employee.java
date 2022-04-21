@@ -43,14 +43,9 @@ public class Employee {
     private Grade grade;
 
     @Column(name = "capacity")
-    @Size(max = 100)
     private Integer capacity;
 
-    @ManyToOne
-    @JoinColumn(name = "supervisor_id")
-    private Employee supervisor;
-
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.ALL, CascadeType.REMOVE})
     @JoinTable(
             name = "employee_skill",
             joinColumns = {@JoinColumn(name = "employee_id")},
@@ -71,7 +66,7 @@ public class Employee {
     @OneToMany(
             targetEntity = Task.class,
             mappedBy = "employee",
-            cascade = CascadeType.ALL,
+            cascade = {CascadeType.ALL, CascadeType.REMOVE},
             fetch = FetchType.LAZY
     )
     private List<Task> tasks;
@@ -80,12 +75,21 @@ public class Employee {
     @OneToMany(
             targetEntity = TaskRequest.class,
             mappedBy = "employee",
-            cascade = CascadeType.ALL,
+            cascade = {CascadeType.ALL, CascadeType.REMOVE},
             fetch = FetchType.LAZY
     )
     private List<TaskRequest> taskRequests;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
-    private Project ownerProject;
+    @OneToMany(
+            targetEntity = Project.class,
+            mappedBy = "owner",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private List<Project> ownerProject;
+
+    @Override
+    public String toString() {
+        return firstName + ' ' +  lastName + ' ' + email;
+    }
 }

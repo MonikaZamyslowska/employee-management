@@ -1,0 +1,43 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>Spring Boot Thymeleaf Application - Employee Management</title>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div sec:authorize="hasAuthority('ROLE_EMPLOYEE')" class="container">
+    <br/><br/>
+    <h3>Lista Twoich wniosków o dołączenie do projektu</h3>
+    <hr/>
+    <br/><br/>
+    <table class="table table-bordered table-striped" id="userTaskRequestTable">
+        <thead>
+        <tr>
+            <th>Projekt</th>
+            <th>Zadanie</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="taskRequest: ${taskRequestsUser}">
+            <td th:text="${taskRequest.task.project.name}"/>
+            <td th:text="${taskRequest.task.toString()}"/>
+            <td th:text="${taskRequest.taskRequestStatus}"/>
+            <td>
+                <form th:if="${taskRequest.taskRequestStatus == waitingStatus}"
+                      th:action="@{'/rejectTaskRequest/employee/' + ${taskRequest.id}}" method="post">
+                    <button class="btn btn-primary" type="submit">Anuluj prośbę</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/desktop}">Wróć do pulpitu</a>
+</div>
+</body>
+</html>

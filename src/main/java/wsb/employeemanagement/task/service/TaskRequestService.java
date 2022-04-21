@@ -6,10 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import wsb.employeemanagement.employee.domain.Employee;
 import wsb.employeemanagement.employee.repository.EmployeeRepository;
 import wsb.employeemanagement.exception.NotEnoughCapacityException;
+import wsb.employeemanagement.exception.TaskNotFoundException;
+import wsb.employeemanagement.task.domain.OpenCloseStatus;
 import wsb.employeemanagement.task.domain.Task;
 import wsb.employeemanagement.task.domain.TaskRequest;
 import wsb.employeemanagement.task.domain.TaskRequestStatus;
-import wsb.employeemanagement.task.domain.TaskStatus;
 import wsb.employeemanagement.task.repository.TaskRepository;
 import wsb.employeemanagement.task.repository.TaskRequestRepository;
 
@@ -30,6 +31,14 @@ public class TaskRequestService {
 
     public List<TaskRequest> getAllTaskRequestByTask(Task task) {
         return taskRequestRepository.findTaskRequestsByTask(task);
+    }
+
+    public List<TaskRequest> getAllTaskRequestByEmployee(Employee employee) {
+        return taskRequestRepository.findTaskRequestsByEmployee(employee);
+    }
+
+    public TaskRequest getById(long id) {
+        return taskRequestRepository.getById(id);
     }
 
     @Transactional
@@ -67,12 +76,15 @@ public class TaskRequestService {
                 });
 
         task.setEmployee(employee);
+        task.setTaskStatus(OpenCloseStatus.CLOSED);
         taskRepository.save(task);
 
         return taskRequest;
     }
 
+    @Transactional
     public TaskRequest rejectTaskRequest(TaskRequest taskRequest) {
+        Task task = taskRequest.getTask();
         taskRequest.setTaskRequestStatus(TaskRequestStatus.REJECTED);
         return taskRequestRepository.save(taskRequest);
     }

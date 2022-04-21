@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wsb.employeemanagement.employee.domain.Employee;
-import wsb.employeemanagement.employee.domain.Role;
+import wsb.employeemanagement.employee.repository.EmployeeRepository;
 import wsb.employeemanagement.exception.TaskNotFoundException;
+import wsb.employeemanagement.task.domain.OpenCloseStatus;
 import wsb.employeemanagement.task.domain.Task;
-import wsb.employeemanagement.task.domain.TaskStatus;
 import wsb.employeemanagement.task.repository.TaskRepository;
 
 import java.util.List;
@@ -15,10 +15,12 @@ import java.util.List;
 @Service
 public class TaskService {
     private TaskRepository taskRepository;
+    private EmployeeRepository employeeRepository;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository) {
+    public TaskService(TaskRepository taskRepository, EmployeeRepository employeeRepository) {
         this.taskRepository = taskRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     @Transactional
@@ -43,11 +45,20 @@ public class TaskService {
         return taskRepository.findTasksByEmployee(employee);
     }
 
-    public List<Task> getAllByRole(Role role) {
-        return taskRepository.findTasksByRole(role);
+    public List<Task> getAllByStatus(OpenCloseStatus openCloseStatus) {
+        return taskRepository.findTasksByTaskStatus(openCloseStatus);
     }
 
-    public List<Task> getAllByStatus(TaskStatus taskStatus) {
-        return taskRepository.findTasksByTaskStatus(taskStatus);
+    @Transactional
+    public Task reopenTask(Task task) {
+        Employee employee = task.getEmployee();
+        List<Task> employeeTasks = employee.getTasks();
+        employeeTasks.remove(task);
+        employee.setCapacity(employee.getCapacity() + task.getCapacity());
+        employeeRepository.save(employee);
+
+        task.setTaskStatus(OpenCloseStatus.OPEN);
+        task.setEmployee(null);
+        return taskRepository.save(task);
     }
 }

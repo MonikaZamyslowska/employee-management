@@ -1,0 +1,105 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>Spring Boot Thymeleaf Application - Employee Management</title>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <br/><br/>
+    <h3>Szczegóły projektu</h3>
+    <hr/>
+    <br/><br/>
+    <table class="table table-bordered table-striped" id="projectTable">
+        <thead>
+        <tr>
+            <th>Nazwa projektu</th>
+            <th>Opis</th>
+            <th>Właściciel projektu (osoba do kontaktu)</th>
+            <th>Status projektu</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${project.name}"/>
+            <td th:text="${project.description}"/>
+            <td th:text="${project.owner.toString()}"/>
+            <td th:text="${project.projectStatus}"/>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="container">
+
+    <h3>Lista zadań</h3>
+
+    <hr/>
+    <a th:if="${(project.projectStatus == openStatus) and isEmployeePM}" sec:authorize="hasAuthority('ROLE_PM')"
+       th:href="@{'/addTask/' + ${project.id}}" class="btn btn-primary">Dodaj zadanie</a>
+    <br/><br/>
+    <table class="table table-bordered table-striped" id="taskTable" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_PM')">
+
+        <thead>
+        <tr>
+            <th>Status zadania</th>
+            <th>Preferowane umiejętności</th>
+            <th>Pracownik</th>
+            <th>Dostępność</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="task: ${tasks}">
+            <td th:text="${task.taskStatus}"/>
+            <td th:text="${task.preferredSkillList}"/>
+            <td th:if="${task.employee != null}" th:text="${task.employee.toString()}"/>
+            <td th:if="${task.employee == null}" th:text="'N/A'"/>
+            <td th:text="${task.capacity}"/>
+            <td>
+                <a th:if="${(project.projectStatus == openStatus) and isEmployeePM}"
+                   sec:authorize="hasAuthority('ROLE_PM')"
+                   th:href="@{'/updateTask/' + ${project.id} + '/' + ${task.id}}"
+                   class="btn btn-info">Zmień status</a>
+                <a th:if="${isEmployeePM}" sec:authorize="hasAuthority('ROLE_PM')"
+                   th:href="@{'/taskRequests/' + ${task.id}}" class="btn btn-info">Wnioski</a>
+                <form th:if="${(task.taskStatus == closeStatus) and (project.projectStatus == openStatus)}" sec:authorize="hasAuthority('ROLE_ADMIN')" th:action="@{'/reopenTask/' + ${task.id}}"
+                      method="post">
+                    <button class="btn btn-primary" type="submit">Otwórz ponownie</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered table-striped" id="userTaskTable" sec:authorize="hasAuthority('ROLE_EMPLOYEE')">
+
+        <thead>
+        <tr>
+            <th>Status zadania</th>
+            <th>Preferowane umiejętności</th>
+            <th>Dostępność</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="task: ${userTasks}">
+            <td th:text="${task.taskStatus}"/>
+            <td th:text="${task.preferredSkillList}"/>
+            <td th:text="${task.capacity}"/>
+            <td>
+                <form th:if="${task.taskStatus == openStatus}" th:action="@{'/createRequest/' + ${task.id}}"
+                      method="post">
+                    <button class="btn btn-primary" type="submit">Dołącz</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/desktop}">Wróć do pulpitu</a>
+</div>
+</body>
+</html>

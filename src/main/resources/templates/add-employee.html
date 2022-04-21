@@ -1,0 +1,60 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>Spring Boot Thymeleaf Application - Employee Management</title>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+
+    <h3>Dodaj/edytuj użytkownika</h3>
+    <hr/>
+
+    <form method="POST" th:action="@{/saveEmployee}" th:object="${employee}">
+
+        <label for="username">Nazwa użytkownika</label>
+        <input id="username" class="form-control col-4 mb-4" placeholder="Uzupełnij nazwę użytkownika" th:field="*{username}"
+               type="text"/>
+        <label for="password">Hasło</label>
+        <input  id="password" class="form-control col-4 mb-4" placeholder="Uzupełnij hasło" th:field="*{password}" type="text"/>
+        <label for="firstname">Imię</label>
+        <input  id="firstname" class="form-control col-4 mb-4" placeholder="Uzupełnij imię" th:field="*{firstName}" type="text"/>
+        <label for="lastname">Nazwisko</label>
+        <input id="lastname" class="form-control col-4 mb-4" placeholder="Uzupełnij nazwisko" th:field="*{lastName}" type="text"/>
+        <label for="email">E-mail</label>
+        <input id="email" class="form-control col-4 mb-4" placeholder="Uzupełnij e-mail" th:field="*{email}" type="text"/>
+        <label for="grade">Stopień zatrudnienia</label>
+        <select id="grade" class="form-control col-4 mb-4" th:field="*{grade}">
+            <option value="">Wybierz stopień zatrudnienia</option>
+            <option th:each="grade : ${grades}" th:text="${grade}" th:value="${grade}"></option>
+        </select>
+        <div class="form-group">
+            <label for="percentage">Wymagana dostępność</label>
+            <select class="form-control col-4 mb-4" id="percentage" name="percentage" th:field="*{capacity}">
+                <option value="30">30</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+        <label class="form-control col-4 mb-4">Role:
+            <input name="roles" th:each="role : ${roles}"
+                   th:field="*{roles}"
+                   th:text="${role}"
+                   th:value="${role}"
+                   type="checkbox"
+            />
+        </label>
+        <input th:field="*{id}" type="hidden"/>
+
+        <button class="btn btn-primary col-2" type="submit">Save</button>
+    </form>
+    <hr/>
+    <a th:href="@{/desktop}">Wróć do pulpitu</a>
+</div>
+</body>
+</html>

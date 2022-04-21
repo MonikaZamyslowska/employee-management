@@ -27,12 +27,11 @@ public class EmployeeDto {
     private String password;
     private Grade grade;
     private Integer capacity;
-    private Employee supervisor;
     private List<Skill> skillList;
     private List<Role> roles;
     private List<Task> tasks;
     private List<TaskRequest> taskRequests;
-    private Project ownerProject;
+    private List<Project> ownerProject;
 
 //    for tests only
     public EmployeeDto(Long id, String firstName) {
